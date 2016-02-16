@@ -1,0 +1,93 @@
+/* 
+  Localizable.strings
+  SMTor
+
+  Created by Julien-Pierre Avérous on 07/02/2016.
+  Copyright © 2016 Julien-Pierre Avérous. All rights reserved.
+*/
+
+
+// -- Tor --
+"tor_button_close" = "Close";
+
+
+// -- Update --
+"update_subtitle_available" = "Tor %@ est disponible — vous utilisez la version %@. Voulez-vous la télécharger ?";
+"update_button_cancel" = "Annuler";
+"update_button_close" = "Fermer";
+"update_button_done" = "Terminer";
+
+"update_status_launching" = "Démarrage de la mise à jour…";
+"update_status_retrieving_info" = "Récupération des informations de l'archive…";
+"update_status_downloading_archive" = "Téléchargement…";
+"update_status_staging_archive" = "Activation de l'archive…";
+"update_status_checking_signature" = "Vérification de la signature…";
+"update_status_relaunching_tor" = "Redémarrage de tor…";
+"update_status_update_done" = "Mise à jour effectuée.";
+"update_status_error" = "Erreur de mise à jour.";
+
+"update_error_fmt" = "Erreur : %@";
+
+"update_download_progress" = "%@ sur %@";
+"update_download_progress_stalled" = "%@ of %@ (stagnant)";
+"update_download_progress_remaining" = "%@ of %@ (%@ restant)";
+
+
+// -- Manager --
+// General
+"tor_out_log" = "Tor: %@";
+"tor_error_log" = "Tor-Erreur: %@";
+
+// SMTorManagerInfoStartDomain
+"tor_start_info_bootstrap" = "Tor est en cours d'amorçage %lu%% (%@).";
+"tor_start_info_hostname" = "Tor a démarré avec le nom d'hôte '%@'.";
+"tor_start_info_url_session" = "Le proxy tor proxy prêt.";
+"tor_start_info_done" = "Tor est prêt.";
+
+"tor_start_warning_canceled" = "Le démarrage de Tor a été annulé.";
+
+"tor_start_err_already_running" = "Tor est déjà en cours d'exécution.";
+"tor_start_err_configuration" = "Impossible d'obtenir certaines informations de la configuration.";
+"tor_start_err_unarchive" = "Impossible de désarchiver tor.";
+"tor_start_err_signature" = "Impossible de valider la signature.";
+"tor_start_err_launch" = "Le système ne peut pas exécuter le binaire tor.";
+"tor_start_err_control_connect" = "Impossible de se connecter au port de contrôle de tor.";
+"tor_start_err_control_authenticate" = "Impossible de s'authentifier pour le contrôle de tor.";
+"tor_start_err_control_monitor" = "Impossible de surveiller tor.";
+
+// SMTorManagerInfoCheckUpdateDomain
+"tor_checkupdate_info_version_available" = "Version disponible sur le serveur: %@";
+
+"tor_checkupdate_error_not_running" = "Tor n'est pas en cours d'exécution.";
+"tor_checkupdate_error_check_remote_info" = "Impossible de télécharger les informations.";
+"tor_checkupdate_error_validate_local_signature" = "Impossible de valider la signature locale.";
+"tor_checkupdate_error_nothing_new" = "Il n'y a pas de mise à jour disponible (déjà à jour).";
+
+// SMTorManagerInfoUpdateDomain
+"tor_update_info_retrieve_info" = "Télécharge les informations de tor.";
+"tor_update_info_archive_size" = "Taille de l'archive distante: %llu";
+"tor_update_info_downloading" = "Télécharge…";
+"tor_update_info_stage" = "Mets en place l'archive.";
+"tor_update_info_signature_check" = "Vérifie la signature.";
+"tor_update_info_relaunch" = "Relance.";
+"tor_update_info_done" = "Terminé.";
+
+"tor_update_err_not_running" = "Tor n'est pas en cours d'exécution.";
+"tor_update_err_configuration" = "Impossible d'obtenir certaines informations de la configuration.";
+"tor_update_err_internal" = "Erreur interne du système.";
+"tor_update_err_archive_info" = "Impossible de télécharger les informations de l'archive tor";
+"tor_update_err_archive_download" = "Impossible de télécharger l'archive tor.";
+"tor_update_err_archive_stage" = "Impossible de mettre en place l'archive tor.";
+"tor_update_err_relaunch" = "Impossible de relancer tor.";
+
+// SMTorManagerInfoOperationDomain
+"tor_operation_info_info" = "Information extraites";
+"tor_operation_info_done" = "Opération terminée";
+
+"tor_operation_err_configuration" = "Impossible d'obtenir certaines informations de la configuration.";
+"tor_operation_err_io" = "Erreur d'E/S";
+"tor_operation_err_network" = "Erreur réseau";
+"tor_operation_err_extract" = "Erreur lors de l'extraction";
+"tor_operation_err_signature" = "Erreur de signature";
+"tor_operation_err_tor" = "Erreur de tor";
+"tor_operation_err_internal" = "Erreur interne";

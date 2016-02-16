@@ -1,0 +1,46 @@
+/*
+ *  PrefixHeader.pch
+ *
+ *  Copyright 2016 Avérous Julien-Pierre
+ *
+ *  This file is part of SMTor.
+ *
+ *  SMTor is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  SMTor is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with SMTor.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+#ifndef PrefixHeader_pch
+# define PrefixHeader_pch
+
+# import <SMFoundation/SMNullabilityHelper.h>
+
+# ifdef DEBUG
+#   if __OBJC__
+#	  define SMDebugLog(Str, Arg...) NSLog(Str, ## Arg)
+#   else
+#	  define SMDebugLog(Str, Arg...) fprintf(stderr, Str"\n", ## Arg)
+#   endif
+# else
+#	define SMDebugLog(Str, ...) ((void)0)
+# endif
+
+
+# define SMLocalizedString(key, comment) ({											\
+	NSBundle *__bundle = [NSBundle bundleWithIdentifier:@"com.sourcemac.SMTor"];	\
+	if (__bundle == nil)															\
+		__bundle = [NSBundle mainBundle];											\
+	[__bundle localizedStringForKey:(key) value:@"" table:(nil)];					\
+})
+
+#endif /* PrefixHeader_pch */
