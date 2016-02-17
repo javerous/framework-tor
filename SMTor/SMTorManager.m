@@ -1031,7 +1031,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 								NSNumber		*progress = context[@"progress"];
 								NSString		*summary = context[@"summary"];
 															  
-								return [NSString stringWithFormat:NSLocalizedString(@"tor_start_info_bootstrap", @""), [progress unsignedIntegerValue], summary];
+								return [NSString stringWithFormat:SMLocalizedString(@"tor_start_info_bootstrap", @""), [progress unsignedIntegerValue], summary];
 							},
 							SMInfoLocalizableKey : @NO,
 						},
@@ -1041,7 +1041,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 						@{
 							SMInfoNameKey : @"SMTorManagerEventStartHostname",
 							SMInfoDynTextKey : ^ NSString *(SMInfo *info) {
-								return [NSString stringWithFormat:NSLocalizedString(@"tor_start_info_hostname", @""), info.context];
+								return [NSString stringWithFormat:SMLocalizedString(@"tor_start_info_hostname", @""), info.context];
 							},
 							SMInfoLocalizableKey : @NO,
 						},
@@ -1140,7 +1140,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 							SMInfoNameKey : @"SMTorManagerEventCheckUpdateAvailable",
 							SMInfoDynTextKey : ^ NSString *(SMInfo *info) {
 								NSDictionary *context = info.context;
-								return [NSString stringWithFormat:NSLocalizedString(@"tor_checkupdate_info_version_available", @""), context[@"new_version"]];
+								return [NSString stringWithFormat:SMLocalizedString(@"tor_checkupdate_info_version_available", @""), context[@"new_version"]];
 							},
 							SMInfoLocalizableKey : @NO,
 						},
@@ -1194,7 +1194,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 							SMInfoNameKey : @"SMTorManagerEventUpdateArchiveSize",
 							SMInfoDynTextKey : ^ NSString *(SMInfo *info) {
 								NSNumber *context = info.context;
-								return [NSString stringWithFormat:NSLocalizedString(@"tor_update_info_archive_size", @""), [context unsignedLongLongValue]];
+								return [NSString stringWithFormat:SMLocalizedString(@"tor_update_info_archive_size", @""), [context unsignedLongLongValue]];
 							},
 							SMInfoLocalizableKey : @NO,
 						},
