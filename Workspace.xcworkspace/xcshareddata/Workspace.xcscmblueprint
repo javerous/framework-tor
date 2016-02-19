@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "0BB4D438F47EB92D7CC2A9BCFFCE5033357F65C6",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "0BB4D438F47EB92D7CC2A9BCFFCE5033357F65C6" : 0,
+    "C72EAD2DB71AA579DD81C848C61935E78ADEC157" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "380E3DD3-B76E-475D-A14D-053543B8CC35",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "0BB4D438F47EB92D7CC2A9BCFFCE5033357F65C6" : "SMTor\/",
+    "C72EAD2DB71AA579DD81C848C61935E78ADEC157" : "SMTor\/Externals\/SMFoundation\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Workspace",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Workspace.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:javerous\/framework-tor.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "0BB4D438F47EB92D7CC2A9BCFFCE5033357F65C6"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:javerous\/framework-foundation.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "C72EAD2DB71AA579DD81C848C61935E78ADEC157"
+    }
+  ]
+}
