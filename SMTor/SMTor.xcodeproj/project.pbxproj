@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E840D8111C769EC40093ABE3 /* SMFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E840D8101C769EC40093ABE3 /* SMFoundation.framework */; };
 		E876913F1C640D1A00C3B537 /* SMTor.h in Headers */ = {isa = PBXBuildFile; fileRef = E876913E1C640D1A00C3B537 /* SMTor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E87691571C64115E00C3B537 /* TorWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E87691531C64115E00C3B537 /* TorWindow.xib */; };
 		E87691581C64115E00C3B537 /* UpdateWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E87691551C64115E00C3B537 /* UpdateWindow.xib */; };
@@ -19,30 +20,13 @@
 		E87691831C6411CC00C3B537 /* SMPublicKey.h in Headers */ = {isa = PBXBuildFile; fileRef = E87691721C6411CC00C3B537 /* SMPublicKey.h */; };
 		E876918B1C64129E00C3B537 /* tor.tgz in Resources */ = {isa = PBXBuildFile; fileRef = E876918A1C64129E00C3B537 /* tor.tgz */; };
 		E89824291C73E2BB00600E66 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E89824281C73E2BB00600E66 /* Media.xcassets */; };
-		E8A86D141C66BFD5009EABB9 /* SMFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8A86D111C66BFB3009EABB9 /* SMFoundation.framework */; };
 		E8D93C981C67AAF100CB0C82 /* SMTorConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = E8D93C961C67AAF100CB0C82 /* SMTorConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E8D93C991C67AAF100CB0C82 /* SMTorConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E8D93C971C67AAF100CB0C82 /* SMTorConfiguration.m */; };
 		E8D93C9F1C67FC2400CB0C82 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E8D93CA11C67FC2400CB0C82 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		E8A86D101C66BFB3009EABB9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E8A86D0C1C66BFB3009EABB9 /* SMFoundation.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E8A86D011C66BF7A009EABB9;
-			remoteInfo = SMFoundation;
-		};
-		E8A86D121C66BFC7009EABB9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E8A86D0C1C66BFB3009EABB9 /* SMFoundation.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = E8A86D001C66BF7A009EABB9;
-			remoteInfo = SMFoundation;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
+		E840D8101C769EC40093ABE3 /* SMFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SMFoundation.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/Workspace-cnxnxbikgaelbpbindjrnwxwsaut/Build/Products/Debug/SMFoundation.framework"; sourceTree = "<group>"; };
 		E876913B1C640D1A00C3B537 /* SMTor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SMTor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E876913E1C640D1A00C3B537 /* SMTor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SMTor.h; sourceTree = "<group>"; };
 		E87691401C640D1A00C3B537 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -59,7 +43,6 @@
 		E87691721C6411CC00C3B537 /* SMPublicKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMPublicKey.h; sourceTree = "<group>"; };
 		E876918A1C64129E00C3B537 /* tor.tgz */ = {isa = PBXFileReference; lastKnownFileType = file; path = tor.tgz; sourceTree = "<group>"; };
 		E89824281C73E2BB00600E66 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
-		E8A86D0C1C66BFB3009EABB9 /* SMFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SMFoundation.xcodeproj; path = Externals/SMFoundation/SMFoundation.xcodeproj; sourceTree = "<group>"; };
 		E8D93C961C67AAF100CB0C82 /* SMTorConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTorConfiguration.h; sourceTree = "<group>"; };
 		E8D93C971C67AAF100CB0C82 /* SMTorConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTorConfiguration.m; sourceTree = "<group>"; };
 		E8D93C9C1C67B09300CB0C82 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
@@ -72,18 +55,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E8A86D141C66BFD5009EABB9 /* SMFoundation.framework in Frameworks */,
+				E840D8111C769EC40093ABE3 /* SMFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E840D80A1C769CB00093ABE3 /* Links */ = {
+			isa = PBXGroup;
+			children = (
+				E840D8101C769EC40093ABE3 /* SMFoundation.framework */,
+			);
+			name = Links;
+			sourceTree = "<group>";
+		};
 		E87691311C640D1A00C3B537 = {
 			isa = PBXGroup;
 			children = (
-				E8A86CF61C66BF29009EABB9 /* Externals */,
 				E876913D1C640D1A00C3B537 /* SMTor */,
+				E840D80A1C769CB00093ABE3 /* Links */,
 				E876913C1C640D1A00C3B537 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -144,22 +135,6 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		E8A86CF61C66BF29009EABB9 /* Externals */ = {
-			isa = PBXGroup;
-			children = (
-				E8A86D0C1C66BFB3009EABB9 /* SMFoundation.xcodeproj */,
-			);
-			name = Externals;
-			sourceTree = "<group>";
-		};
-		E8A86D0D1C66BFB3009EABB9 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				E8A86D111C66BFB3009EABB9 /* SMFoundation.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		E8D93C9B1C67B06A00CB0C82 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -199,7 +174,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				E8A86D131C66BFC7009EABB9 /* PBXTargetDependency */,
 			);
 			name = SMTor;
 			productName = SMTor;
@@ -232,28 +206,12 @@
 			mainGroup = E87691311C640D1A00C3B537;
 			productRefGroup = E876913C1C640D1A00C3B537 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = E8A86D0D1C66BFB3009EABB9 /* Products */;
-					ProjectRef = E8A86D0C1C66BFB3009EABB9 /* SMFoundation.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				E876913A1C640D1A00C3B537 /* SMTor */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		E8A86D111C66BFB3009EABB9 /* SMFoundation.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SMFoundation.framework;
-			remoteRef = E8A86D101C66BFB3009EABB9 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		E87691391C640D1A00C3B537 /* Resources */ = {
@@ -283,14 +241,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		E8A86D131C66BFC7009EABB9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = SMFoundation;
-			targetProxy = E8A86D121C66BFC7009EABB9 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		E87691531C64115E00C3B537 /* TorWindow.xib */ = {
