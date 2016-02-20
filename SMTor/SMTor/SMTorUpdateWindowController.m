@@ -115,7 +115,7 @@ NS_ASSUME_NONNULL_BEGIN
 */
 #pragma mark - Tools
 
-- (void)handleUpdateFromVersion:(NSString *)oldVersion toVersion:(NSString *)newVersion torManager:(SMTorManager *)torManager infoHandler:(nullable void (^)(SMInfo *info))handler
+- (void)handleUpdateWithTorManager:(SMTorManager *)torManager oldVersion:(NSString *)oldVersion newVersion:(NSString *)newVersion infoHandler:(nullable void (^)(SMInfo *info))handler
 {
 	if (!oldVersion || !newVersion || !torManager)
 		return;
