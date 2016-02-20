@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 /*
 ** SMTorConfiguration
 */
-#pragma martk - SMTorConfiguration
+#pragma mark - SMTorConfiguration
 
 @implementation SMTorConfiguration
 
@@ -37,9 +37,9 @@ NS_ASSUME_NONNULL_BEGIN
 {
 	SMTorConfiguration *copy = [[SMTorConfiguration allocWithZone:zone] init];
 	
-	// Socks.	
-	copy.socksPort = _socksPort;
+	// Socks.
 	copy.socksHost = [_socksHost copy];
+	copy.socksPort = _socksPort;
 
 	// Hidden service.
 	copy.hiddenService = _hiddenService;
@@ -60,8 +60,8 @@ NS_ASSUME_NONNULL_BEGIN
 	BOOL differ = NO;
 	
 	// Socks.
-	differ = differ || (_socksPort != configuration.socksPort);
 	differ = differ || ([_socksHost isEqualToString:configuration.socksHost] == NO);
+	differ = differ || (_socksPort != configuration.socksPort);
 
 	// Hidden service.
 	differ = differ || (_hiddenService != configuration.hiddenService);
@@ -87,8 +87,8 @@ NS_ASSUME_NONNULL_BEGIN
 	BOOL valid = YES;
 	
 	// Socks.
-	valid = valid && (_socksPort >= 1);
 	valid = valid && (_socksHost != nil);
+	valid = valid && (_socksPort >= 1);
 	
 	// Hidden service.
 	if (_hiddenService)
