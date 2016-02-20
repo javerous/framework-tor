@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharedController;
 
 // -- Tools --
-- (void)handleUpdateFromVersion:(NSString *)oldVersion toVersion:(NSString *)newVersion torManager:(SMTorManager *)torManager logHandler:(nullable void (^)(SMInfo *info))logHandler;
+- (void)handleUpdateFromVersion:(NSString *)oldVersion toVersion:(NSString *)newVersion torManager:(SMTorManager *)torManager infoHandler:(nullable void (^)(SMInfo *info))handler;
 
 @end
 

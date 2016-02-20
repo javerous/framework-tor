@@ -66,7 +66,7 @@ NS_ASSUME_NONNULL_BEGIN
 	// Hidden service.
 	differ = differ || (_hiddenService != configuration.hiddenService);
 	
-	if (!_hiddenService && configuration.hiddenService)
+	if (configuration.hiddenService)
 	{
 		differ = differ || (_hiddenServiceRemotePort != configuration.hiddenServiceRemotePort);
 		differ = differ || ([_hiddenServiceLocalHost isEqualToString:configuration.hiddenServiceLocalHost] == NO);

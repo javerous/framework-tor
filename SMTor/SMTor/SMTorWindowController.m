@@ -95,7 +95,7 @@ NS_ASSUME_NONNULL_BEGIN
 	[self.window center];
 	[progressIndicator startAnimation:nil];
 	
-	[_torManager startWithHandler:^(SMInfo *info) {
+	[_torManager startWithInfoHandler:^(SMInfo *info) {
 		
 		dispatch_async(dispatch_get_main_queue(), ^{
 			

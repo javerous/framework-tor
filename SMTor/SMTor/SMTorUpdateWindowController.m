@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 	dispatch_block_t	_currentCancelBlock;
 	BOOL				_updateDone;
 	
-	void (^_logHandler)(SMInfo *info);
+	void (^_infoHandler)(SMInfo *info);
 }
 
 @property (strong, nonatomic)	IBOutlet NSView			*availableView;
@@ -115,13 +115,10 @@ NS_ASSUME_NONNULL_BEGIN
 */
 #pragma mark - Tools
 
-- (void)handleUpdateFromVersion:(NSString *)oldVersion toVersion:(NSString *)newVersion torManager:(SMTorManager *)torManager logHandler:(nullable void (^)(SMInfo *info))logHandler
+- (void)handleUpdateFromVersion:(NSString *)oldVersion toVersion:(NSString *)newVersion torManager:(SMTorManager *)torManager infoHandler:(nullable void (^)(SMInfo *info))handler
 {
 	if (!oldVersion || !newVersion || !torManager)
 		return;
-	
-	if (!logHandler)
-		logHandler = ^(SMInfo *info) { };
 	
 	dispatch_async(dispatch_get_main_queue(), ^{
 		
@@ -131,10 +128,13 @@ NS_ASSUME_NONNULL_BEGIN
 		// Handle log handler.
 		dispatch_queue_t logQueue = dispatch_queue_create("com.smtor.update.logs", DISPATCH_QUEUE_SERIAL);
 		
-		_logHandler = ^(SMInfo *info) {
-			dispatch_async(logQueue, ^{
-				logHandler(info);
-			});
+		_infoHandler = ^(SMInfo *info) {
+			if (handler)
+			{
+				dispatch_async(logQueue, ^{
+					handler(info);
+				});
+			}
 		};
 		
 		// Place availableView.
@@ -200,7 +200,7 @@ NS_ASSUME_NONNULL_BEGIN
 	};
 	
 	// Launch update.
-	_currentCancelBlock = [_torManager updateWithEventHandler:^(SMInfo *info){
+	_currentCancelBlock = [_torManager updateWithInfoHandler:^(SMInfo *info){
 		
 		dispatch_async(dispatch_get_main_queue(), ^{
 			
@@ -211,7 +211,7 @@ NS_ASSUME_NONNULL_BEGIN
 					case SMTorManagerEventUpdateArchiveInfoRetrieving:
 					{
 						// Log
-						_logHandler(info);
+						_infoHandler(info);
 
 						// Update UI.
 						_workingStatusField.stringValue = SMLocalizedString(@"update_status_retrieving_info", @"");
@@ -222,7 +222,7 @@ NS_ASSUME_NONNULL_BEGIN
 					case SMTorManagerEventUpdateArchiveSize:
 					{
 						// Log.
-						_logHandler(info);
+						_infoHandler(info);
 
 						// Update UI.
 						_workingStatusField.stringValue = SMLocalizedString(@"update_status_downloading_archive", @"");
@@ -248,7 +248,7 @@ NS_ASSUME_NONNULL_BEGIN
 						// Log.
 						if (loggedDownload == NO)
 						{
-							_logHandler(info);
+							_infoHandler(info);
 							loggedDownload = YES;
 						}
 						
@@ -281,7 +281,7 @@ NS_ASSUME_NONNULL_BEGIN
 					case SMTorManagerEventUpdateArchiveStage:
 					{
 						// Log.
-						_logHandler(info);
+						_infoHandler(info);
 
 						// Update UI.
 						_workingStatusField.stringValue = SMLocalizedString(@"update_status_staging_archive", @"");
@@ -292,7 +292,7 @@ NS_ASSUME_NONNULL_BEGIN
 					case SMTorManagerEventUpdateSignatureCheck:
 					{
 						// Log.
-						_logHandler(info);
+						_infoHandler(info);
 						
 						// Update UI.
 						_workingStatusField.stringValue = SMLocalizedString(@"update_status_checking_signature", @"");
@@ -303,7 +303,7 @@ NS_ASSUME_NONNULL_BEGIN
 					case SMTorManagerEventUpdateRelaunch:
 					{
 						// Log.
-						_logHandler(info);
+						_infoHandler(info);
 
 						// Update UI.
 						_workingStatusField.stringValue = SMLocalizedString(@"update_status_relaunching_tor", @"");
@@ -314,7 +314,7 @@ NS_ASSUME_NONNULL_BEGIN
 					case SMTorManagerEventUpdateDone:
 					{
 						// Log.
-						_logHandler(info);
+						_infoHandler(info);
 						
 						// Update UI.
 						_workingStatusField.stringValue = SMLocalizedString(@"update_status_update_done", @"");
@@ -333,7 +333,7 @@ NS_ASSUME_NONNULL_BEGIN
 				speedHelper = nil;
 
 				// Log.
-				_logHandler(info);
+				_infoHandler(info);
 				
 				// Update UI.
 				_workingProgress.hidden = YES;

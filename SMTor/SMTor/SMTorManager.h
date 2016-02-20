@@ -169,15 +169,15 @@ typedef enum
 - (id)initWithConfiguration:(SMTorConfiguration *)configuration;
 
 // -- Life --
-- (void)startWithHandler:(nullable void (^)(SMInfo *info))handler;
+- (void)startWithInfoHandler:(nullable void (^)(SMInfo *info))handler;
 - (void)stopWithCompletionHandler:(nullable dispatch_block_t)handler;
 
 // -- Update --
-- (dispatch_block_t)checkForUpdateWithCompletionHandler:(void (^)(SMInfo *info))handler;
-- (dispatch_block_t)updateWithEventHandler:(void (^)(SMInfo *info))handler;
+- (dispatch_block_t)checkForUpdateWithInfoHandler:(void (^)(SMInfo *info))handler;
+- (dispatch_block_t)updateWithInfoHandler:(void (^)(SMInfo *info))handler;
 
 // -- Configuration --
-- (BOOL)loadConfiguration:(SMTorConfiguration *)configuration;
+- (BOOL)loadConfiguration:(SMTorConfiguration *)configuration infoHandler:(nullable void (^)(SMInfo *info))hander;
 
 // -- Events --
 @property (strong, atomic, nullable) void (^logHandler)(SMTorManagerLogKind kind, NSString *log);
