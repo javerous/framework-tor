@@ -276,7 +276,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 */
 #pragma mark - SMTorManager - Life
 
-- (void)startWithHandler:(nullable void (^)(SMInfo *info))handler
+- (void)startWithInfoHandler:(nullable void (^)(SMInfo *info))handler
 {
 	if (!handler)
 		handler = ^(SMInfo *error) { };
@@ -395,7 +395,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 */
 #pragma mark - SMTorManager - Update
 
-- (dispatch_block_t)checkForUpdateWithCompletionHandler:(void (^)(SMInfo *info))handler
+- (dispatch_block_t)checkForUpdateWithInfoHandler:(void (^)(SMInfo *info))handler
 {
 	NSAssert(handler, @"handler is nil");
 	
@@ -498,12 +498,12 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 	
 	// Return cancel block.
 	return ^{
-		SMDebugLog(@"<cancel checkForUpdateWithCompletionHandler (global)>");
+		SMDebugLog(@"<cancel checkForUpdateWithInfoHandler (global)>");
 		[queue cancel];
 	};
 }
 
-- (dispatch_block_t)updateWithEventHandler:(void (^)(SMInfo *info))handler
+- (dispatch_block_t)updateWithInfoHandler:(void (^)(SMInfo *info))handler
 {
 	NSAssert(handler, @"handler is nil");
 
@@ -778,7 +778,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 */
 #pragma mark - SMTorManager - Configuration
 
-- (BOOL)loadConfiguration:(SMTorConfiguration *)config
+- (BOOL)loadConfiguration:(SMTorConfiguration *)config infoHandler:(nullable void (^)(SMInfo *info))handler
 {
 	NSAssert(config, @"configuration is nil");
 
@@ -789,7 +789,6 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 	
 	if ([_configuration differFromConfiguration:configuration] == NO)
 		return YES;
-	
 	
 	// Handle change.
 	[_opQueue scheduleBlock:^(SMOperationsControl opCtrl) {
@@ -827,7 +826,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 				[self _moveTorDataFilesToPath:configuration.dataPath];
 			
 			if ([_configuration.identityPath isEqualToString:configuration.identityPath] == NO)
-				[self _moveTorDataFilesToPath:configuration.identityPath];
+				[self _moveTorIdentityFilesToPath:configuration.identityPath];
 			
 			// Continue.
 			ctrl(SMOperationsControlContinue);
@@ -850,36 +849,43 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 			
 			[torTask startWithConfiguration:_configuration logHandler:self.logHandler completionHandler:^(SMInfo *info) {
 				
-				if (info.kind == SMInfoInfo)
+				switch (info.kind)
 				{
-					if (info.code == SMTorManagerEventStartURLSession)
+					case SMInfoInfo:
 					{
-						dispatch_async(_localQueue, ^{
-							_urlSession = info.context;
-						});
+						if (info.code == SMTorManagerEventStartURLSession)
+						{
+							dispatch_async(_localQueue, ^{
+								_urlSession = info.context;
+							});
+						}
+						else if (info.code == SMTorManagerEventStartDone)
+						{
+							dispatch_async(_localQueue, ^{
+								_torTask = torTask;
+							});
+							
+							ctrl(SMOperationsControlContinue);
+						}
+						break;
 					}
-					else if (info.code == SMTorManagerEventStartDone)
-					{
-						dispatch_async(_localQueue, ^{
-							_torTask = torTask;
-						});
 						
-						ctrl(SMOperationsControlContinue);
+					case SMInfoWarning:
+					{
+						if (info.code == SMTorManagerWarningStartCanceled)
+							ctrl(SMOperationsControlFinish);
+						break;
 					}
-				}
-				else if (info.kind == SMInfoWarning)
-				{
-					if (info.code == SMTorManagerWarningStartCanceled)
+						
+					case SMInfoError:
 					{
 						ctrl(SMOperationsControlFinish);
+						break;
 					}
 				}
-				else if (info.kind == SMInfoError)
-				{
-					NSLog(@"Error: Can't relaunch tor.");
-					ctrl(SMOperationsControlFinish);
-					return;
-				}
+				
+				if (handler)
+					handler(info);
 			}];
 		}];
 		
