@@ -198,8 +198,6 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 	
 	// URL Session.
 	NSURLSession		*_urlSession;
-
-	dispatch_source_t	_torChangesTimer;
 }
 
 
@@ -209,6 +207,11 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 */
 #pragma mark - SMTorManager - Instance
 
++ (void)initialize
+{
+	[self registerInfoDescriptors];
+}
+
 - (id)initWithConfiguration:(SMTorConfiguration *)configuration
 {
 	NSAssert(configuration, @"configuration is nil");
@@ -217,12 +220,6 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 	
     if (self)
 	{
-		static dispatch_once_t onceToken;
-		
-		dispatch_once(&onceToken, ^{
-			[[self class] registerInfoDescriptors];
-		});
-		
 		// Handle configuration.
 		_configuration = [configuration copy];
 		
@@ -1017,351 +1014,502 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 
 + (void)registerInfoDescriptors
 {
-	NSDictionary *descriptors = @{
+	NSMutableDictionary *descriptors = [[NSMutableDictionary alloc] init];
+	
+	// == SMTorManagerInfoStartDomain ==
+	descriptors[SMTorManagerInfoStartDomain] = ^ NSDictionary * (SMInfoKind kind, int code) {
 		
-		// == SMTorManagerInfoStartDomain ==
-		SMTorManagerInfoStartDomain : @{
-			@(SMInfoInfo) :
-				@{
-					@(SMTorManagerEventStartBootstrapping) :
-						@{
+		switch (kind)
+		{
+			case SMInfoInfo:
+			{
+				switch ((SMTorManagerEventStart)code)
+				{
+					case SMTorManagerEventStartBootstrapping:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerEventStartBootstrapping",
-							SMInfoDynTextKey : ^ NSString *(SMInfo *info) {
-								NSDictionary	*context = info.context;
-								NSNumber		*progress = context[@"progress"];
-								NSString		*summary = context[@"summary"];
-															  
+							SMInfoDynTextKey : ^ NSString *(NSDictionary *context) {
+								NSNumber	*progress = context[@"progress"];
+								NSString	*summary = context[@"summary"];
+									 
 								return [NSString stringWithFormat:SMLocalizedString(@"tor_start_info_bootstrap", @""), [progress unsignedIntegerValue], summary];
 							},
 							SMInfoLocalizableKey : @NO,
-						},
-												  
+						};
+					}
 					
-					@(SMTorManagerEventStartHostname) :
-						@{
+					case SMTorManagerEventStartHostname:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerEventStartHostname",
-							SMInfoDynTextKey : ^ NSString *(SMInfo *info) {
-								return [NSString stringWithFormat:SMLocalizedString(@"tor_start_info_hostname", @""), info.context];
+							SMInfoDynTextKey : ^ NSString *(NSString *context) {
+								return [NSString stringWithFormat:SMLocalizedString(@"tor_start_info_hostname", @""), context];
 							},
 							SMInfoLocalizableKey : @NO,
-						},
-					
-					@(SMTorManagerEventStartURLSession) :
-						@{
+						};
+					}
+						
+					case SMTorManagerEventStartURLSession:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerEventStartURLSession",
 							SMInfoTextKey : @"tor_start_info_url_session",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerEventStartDone) :
-						@{
+						};
+					}
+						
+					case SMTorManagerEventStartDone:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerEventStartDone",
 							SMInfoTextKey : @"tor_start_info_done",
 							SMInfoLocalizableKey : @YES,
-						},
-				},
-			
-			@(SMInfoWarning) :
-				@{
-					@(SMTorManagerWarningStartCanceled) :
-						@{
+						  };
+					}
+				}
+				break;
+			}
+				
+			case SMInfoWarning:
+			{
+				switch ((SMTorManagerWarningStart)code)
+				{
+					case SMTorManagerWarningStartCanceled:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerWarningStartCanceled",
 							SMInfoTextKey : @"tor_start_warning_canceled",
 							SMInfoLocalizableKey : @YES,
-						},
-				},
+						  };
+					}
+				}
+				break;
+			}
 			
-			@(SMInfoError) :
-				@{
-					@(SMTorManagerErrorStartAlreadyRunning) :
-						@{
+			case SMInfoError:
+			{
+				switch ((SMTorManagerErrorStart)code)
+				{
+					case SMTorManagerErrorStartAlreadyRunning:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorStartAlreadyRunning",
 							SMInfoTextKey : @"tor_start_err_already_running",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerErrorStartConfiguration) :
-						@{
+						};
+					}
+						
+					case SMTorManagerErrorStartConfiguration:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorStartConfiguration",
 							SMInfoTextKey : @"tor_start_err_configuration",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerErrorStartUnarchive) :
-						@{
+						};
+					}
+						
+					case SMTorManagerErrorStartUnarchive:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorStartUnarchive",
 							SMInfoTextKey : @"tor_start_err_unarchive",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerErrorStartSignature) :
-						@{
+						};
+					}
+						
+					case SMTorManagerErrorStartSignature:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorStartSignature",
 							SMInfoTextKey : @"tor_start_err_signature",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerErrorStartLaunch) :
-						@{
+						};
+					}
+						
+					case SMTorManagerErrorStartLaunch:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorStartLaunch",
 							SMInfoTextKey : @"tor_start_err_launch",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerErrorStartControlConnect) :
-						@{
+						};
+					}
+						
+					case SMTorManagerErrorStartControlConnect:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorStartControlConnect",
 							SMInfoTextKey : @"tor_start_err_control_connect",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerErrorStartControlAuthenticate) :
-						@{
+						};
+					}
+						
+					case SMTorManagerErrorStartControlAuthenticate:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorStartControlAuthenticate",
 							SMInfoTextKey : @"tor_start_err_control_authenticate",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerErrorStartControlMonitor) :
-						@{
+						};
+					}
+						
+					case SMTorManagerErrorStartControlMonitor:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorStartControlMonitor",
 							SMInfoTextKey : @"tor_start_err_control_monitor",
 							SMInfoLocalizableKey : @YES,
-						},
+						};
+					}
 				}
-		},
-		
-		// == SMTorManagerInfoCheckUpdateDomain ==
-		SMTorManagerInfoCheckUpdateDomain : @{
-			@(SMInfoInfo) :
-				@{
-					@(SMTorManagerEventCheckUpdateAvailable) :
-						@{
+				break;
+			}
+		}
+		return nil;
+	};
+	
+	// == SMTorManagerInfoCheckUpdateDomain ==
+	descriptors[SMTorManagerInfoCheckUpdateDomain] = ^ NSDictionary * (SMInfoKind kind, int code) {
+
+		switch (kind)
+		{
+			case SMInfoInfo:
+			{
+				switch ((SMTorManagerEventCheckUpdate)code)
+				{
+					case SMTorManagerEventCheckUpdateAvailable:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerEventCheckUpdateAvailable",
-							SMInfoDynTextKey : ^ NSString *(SMInfo *info) {
-								NSDictionary *context = info.context;
+							SMInfoDynTextKey : ^ NSString *(NSDictionary *context) {
 								return [NSString stringWithFormat:SMLocalizedString(@"tor_checkupdate_info_version_available", @""), context[@"new_version"]];
 							},
 							SMInfoLocalizableKey : @NO,
-						},
-				},
+						};
+					}
+				}
+				break;
+			}
 				
-			@(SMInfoError) :
-				@{
-					@(SMTorManagerErrorCheckUpdateTorNotRunning) :
-						@{
+			case SMInfoWarning:
+			{
+				break;
+			}
+				
+			case SMInfoError:
+			{
+				switch ((SMTorManagerErrorCheckUpdate)code)
+				{
+					case SMTorManagerErrorCheckUpdateTorNotRunning:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorCheckUpdateTorNotRunning",
 							SMInfoTextKey : @"tor_checkupdate_error_not_running",
 							SMInfoLocalizableKey : @YES,
-						},
+						};
+					}
 						
-					@(SMTorManagerErrorRetrieveRemoteInfo) :
-						@{
+					case SMTorManagerErrorRetrieveRemoteInfo:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorRetrieveRemoteInfo",
 							SMInfoTextKey : @"tor_checkupdate_error_check_remote_info",
 							SMInfoLocalizableKey : @YES,
-						},
+						};
+					}
 						
-					@(SMTorManagerErrorCheckUpdateLocalSignature) :
-						@{
+					case SMTorManagerErrorCheckUpdateLocalSignature:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorCheckUpdateLocalSignature",
 							SMInfoTextKey : @"tor_checkupdate_error_validate_local_signature",
 							SMInfoLocalizableKey : @YES,
-						},
+						};
+					}
 						
-					@(SMTorManagerErrorCheckUpdateNothingNew) :
-						@{
+					case SMTorManagerErrorCheckUpdateNothingNew:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorCheckUpdateNothingNew",
 							SMInfoTextKey : @"tor_checkupdate_error_nothing_new",
 							SMInfoLocalizableKey : @YES,
-						},
+						};
+					}
 				}
-		},
+				break;
+			}
+		}
 		
-		// == SMTorManagerInfoUpdateDomain ==
-		SMTorManagerInfoUpdateDomain : @{
-			@(SMInfoInfo) :
-				@{
-					@(SMTorManagerEventUpdateArchiveInfoRetrieving) :
-						@{
+		return nil;
+	};
+	
+	// == SMTorManagerInfoUpdateDomain ==
+	descriptors[SMTorManagerInfoUpdateDomain] = ^ NSDictionary * (SMInfoKind kind, int code) {
+
+		switch (kind)
+		{
+			case SMInfoInfo:
+			{
+				switch ((SMTorManagerEventUpdate)code)
+				{
+					case SMTorManagerEventUpdateArchiveInfoRetrieving:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerEventUpdateArchiveInfoRetrieving",
 							SMInfoTextKey : @"tor_update_info_retrieve_info",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerEventUpdateArchiveSize) :
-						@{
+						};
+					}
+						
+					case SMTorManagerEventUpdateArchiveSize:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerEventUpdateArchiveSize",
-							SMInfoDynTextKey : ^ NSString *(SMInfo *info) {
-								NSNumber *context = info.context;
+							SMInfoDynTextKey : ^ NSString *(NSNumber *context) {
 								return [NSString stringWithFormat:SMLocalizedString(@"tor_update_info_archive_size", @""), [context unsignedLongLongValue]];
 							},
 							SMInfoLocalizableKey : @NO,
-						},
-					
-					@(SMTorManagerEventUpdateArchiveDownloading) :
-						@{
+						};
+					}
+						
+					case SMTorManagerEventUpdateArchiveDownloading:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerEventUpdateArchiveDownloading",
 							SMInfoTextKey : @"tor_update_info_downloading",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerEventUpdateArchiveStage) :
-						@{
+						};
+					}
+						
+					case SMTorManagerEventUpdateArchiveStage:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerEventUpdateArchiveStage",
 							SMInfoTextKey : @"tor_update_info_stage",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerEventUpdateSignatureCheck) :
-						@{
+						};
+					}
+						
+					case SMTorManagerEventUpdateSignatureCheck:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerEventUpdateSignatureCheck",
 							SMInfoTextKey : @"tor_update_info_signature_check",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerEventUpdateRelaunch) :
-						@{
+						};
+					}
+						
+					case SMTorManagerEventUpdateRelaunch:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerEventUpdateRelaunch",
 							SMInfoTextKey : @"tor_update_info_relaunch",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerEventUpdateDone) :
-						@{
+							};
+					}
+						
+					case SMTorManagerEventUpdateDone:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerEventUpdateDone",
 							SMInfoTextKey : @"tor_update_info_done",
 							SMInfoLocalizableKey : @YES,
-						},
-				},
-			
-			@(SMInfoError) :
-				@{
-					@(SMTorManagerErrorUpdateTorNotRunning) :
-						@{
+						};
+					}
+				}
+				break;
+			}
+				
+			case SMInfoWarning:
+			{
+				break;
+			}
+				
+			case SMInfoError:
+			{
+				switch ((SMTorManagerErrorUpdate)code)
+				{
+					case SMTorManagerErrorUpdateTorNotRunning:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorUpdateTorNotRunning",
 							SMInfoTextKey : @"tor_update_err_not_running",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerErrorUpdateConfiguration) :
-						@{
+						};
+					}
+						
+					case SMTorManagerErrorUpdateConfiguration:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorUpdateConfiguration",
 							SMInfoTextKey : @"tor_update_err_configuration",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerErrorUpdateInternal) :
-						@{
+						};
+					}
+						
+					case SMTorManagerErrorUpdateInternal:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorUpdateInternal",
 							SMInfoTextKey : @"tor_update_err_internal",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerErrorUpdateArchiveInfo) :
-						@{
+						};
+					}
+						
+					case SMTorManagerErrorUpdateArchiveInfo:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorUpdateArchiveInfo",
 							SMInfoTextKey : @"tor_update_err_archive_info",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerErrorUpdateArchiveDownload) :
-						@{
+						};
+					}
+						
+					case SMTorManagerErrorUpdateArchiveDownload:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorUpdateArchiveDownload",
 							SMInfoTextKey : @"tor_update_err_archive_download",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerErrorUpdateArchiveStage) :
-						@{
+						};
+					}
+						
+					case SMTorManagerErrorUpdateArchiveStage:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorUpdateArchiveStage",
 							SMInfoTextKey : @"tor_update_err_archive_stage",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerErrorUpdateRelaunch) :
-						@{
+						};
+					}
+						
+					case SMTorManagerErrorUpdateRelaunch:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorUpdateRelaunch",
 							SMInfoTextKey : @"tor_update_err_relaunch",
 							SMInfoLocalizableKey : @YES,
-						},
+						};
+					}
 				}
-		},
+				break;
+			}
+		}
 		
-		// == SMTorManagerInfoOperationDomain ==
-		SMTorManagerInfoOperationDomain : @{
-			@(SMInfoInfo) :
-				@{
-					@(SMTorManagerEventOperationInfo) :
-						@{
+		return nil;
+	};
+	
+	// == SMTorManagerInfoOperationDomain ==
+	descriptors[SMTorManagerInfoOperationDomain] = ^ NSDictionary * (SMInfoKind kind, int code) {
+
+		switch (kind)
+		{
+			case SMInfoInfo:
+			{
+				switch ((SMTorManagerEventOperation)code)
+				{
+					case SMTorManagerEventOperationInfo:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerEventOperationInfo",
 							SMInfoTextKey : @"tor_operation_info_info",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerEventOperationDone) :
-						@{
+						};
+					}
+						
+					case SMTorManagerEventOperationDone:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerEventOperationDone",
 							SMInfoTextKey : @"tor_operation_info_done",
 							SMInfoLocalizableKey : @YES,
-							},
-					},
-			
-			@(SMInfoError) :
-				@{
-					@(SMTorManagerErrorOperationConfiguration) :
-						@{
+						};
+					}
+				}
+				break;
+			}
+				
+			case SMInfoWarning:
+			{
+				break;
+			}
+				
+			case SMInfoError:
+			{
+				switch ((SMTorManagerErrorOperation)code)
+				{
+					case SMTorManagerErrorOperationConfiguration:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorOperationConfiguration",
 							SMInfoTextKey : @"tor_operation_err_configuration",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerErrorOperationIO) :
-						@{
+						};
+					}
+						
+					case SMTorManagerErrorOperationIO:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorOperationIO",
 							SMInfoTextKey : @"tor_operation_err_io",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerErrorOperationNetwork) :
-						@{
+						};
+					}
+						
+					case SMTorManagerErrorOperationNetwork:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorOperationNetwork",
 							SMInfoTextKey : @"tor_operation_err_network",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerErrorOperationExtract) :
-						@{
+						};
+					}
+						
+					case SMTorManagerErrorOperationExtract:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorOperationExtract",
 							SMInfoTextKey : @"tor_operation_err_extract",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerErrorOperationSignature) :
-						@{
+						};
+					}
+						
+					case SMTorManagerErrorOperationSignature:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorOperationSignature",
 							SMInfoTextKey : @"tor_operation_err_signature",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerErrorOperationTor) :
-						@{
+						};
+					}
+						
+					case SMTorManagerErrorOperationTor:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorOperationTor",
 							SMInfoTextKey : @"tor_operation_err_tor",
 							SMInfoLocalizableKey : @YES,
-						},
-					
-					@(SMTorManagerErrorInternal) :
-						@{
+						};
+					}
+						
+					case SMTorManagerErrorInternal:
+					{
+						return @{
 							SMInfoNameKey : @"SMTorManagerErrorInternal",
 							SMInfoTextKey : @"tor_operation_err_internal",
 							SMInfoLocalizableKey : @YES,
-						},
+						};
+					}
 				}
-		},
+				break;
+			}
+		}
+		
+		return nil;
 	};
 	
-	[SMInfo registerRenderDescriptors:descriptors localizer:^NSString * _Nonnull(NSString * _Nonnull token) {
+	[SMInfo registerDomainsDescriptors:descriptors localizer:^NSString * _Nonnull(NSString * _Nonnull token) {
 		return SMLocalizedString(token, @"");
 	}];
 }

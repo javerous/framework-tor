@@ -29,13 +29,13 @@ NS_ASSUME_NONNULL_BEGIN
 /*
 ** SMTorConfiguration
 */
-#pragma martk - SMTorConfiguration
+#pragma mark - SMTorConfiguration
 
 @interface SMTorConfiguration : NSObject <NSCopying>
 
 // -- Socks --
-@property (nonatomic) uint16_t	socksPort;
 @property (nonatomic) NSString	*socksHost;
+@property (nonatomic) uint16_t	socksPort;
 
 // -- Hidden Service --
 @property (nonatomic) BOOL		hiddenService;
