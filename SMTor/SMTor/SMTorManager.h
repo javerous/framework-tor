@@ -74,7 +74,7 @@ typedef enum
 typedef enum
 {
 	SMTorManagerEventStartBootstrapping,	// context: @{ @"progress" : NSNumber, @"summary" : NSString }
-	SMTorManagerEventStartHostname,
+	SMTorManagerEventStartHostname,			// context: NSString
 	SMTorManagerEventStartURLSession,		// context: NSURLSession
 	SMTorManagerEventStartDone,
 } SMTorManagerEventStart;
