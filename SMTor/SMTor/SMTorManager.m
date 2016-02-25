@@ -2584,7 +2584,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 		task = [urlSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
 			
 			// Check error.
-			if (error)
+			if (data.length == 0 || error)
 			{
 				handler([SMInfo infoOfKind:SMInfoError domain:SMTorManagerInfoOperationDomain code:SMTorManagerErrorOperationNetwork context:error]);
 				ctrl(SMOperationsControlFinish);
@@ -2748,7 +2748,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 	// Read signature.
 	NSData *data = [NSData dataWithContentsOfFile:signaturePath];
 	
-	if (!data)
+	if (data.length == 0)
 	{
 		handler([SMInfo infoOfKind:SMInfoError domain:SMTorManagerInfoOperationDomain code:SMTorManagerErrorOperationIO]);
 		return;
