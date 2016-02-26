@@ -178,6 +178,7 @@ typedef enum
 
 // -- Configuration --
 - (BOOL)loadConfiguration:(SMTorConfiguration *)configuration infoHandler:(nullable void (^)(SMInfo *info))hander;
+- (SMTorConfiguration *)configuration;
 
 // -- Events --
 @property (strong, atomic, nullable) void (^logHandler)(SMTorManagerLogKind kind, NSString *log);

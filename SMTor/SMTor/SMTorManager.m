@@ -901,6 +901,18 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 	return YES;
 }
 
+- (SMTorConfiguration *)configuration
+{
+	__block SMTorConfiguration *configuration;
+	
+	dispatch_sync(_localQueue, ^{
+		configuration = [_configuration copy];
+	});
+	
+	return configuration;
+}
+
+
 
 /*
 ** SMTorManager - Path Change
