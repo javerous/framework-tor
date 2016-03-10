@@ -1,5 +1,5 @@
 /*
- *  SMTorUpdateWindowController.h
+ *  SMTorStartController.h
  *
  *  Copyright 2016 Avérous Julien-Pierre
  *
@@ -32,21 +32,19 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Forward
 
 @class SMTorManager;
+@class SMInfo;
 
 
 
 /*
-** SMTorUpdateWindowController
+** SMTorStartController
 */
-#pragma mark - SMTorUpdateWindowController
+#pragma mark - SMTorStartController
 
-@interface SMTorUpdateWindowController : NSWindowController
+@interface SMTorStartController : NSObject
 
 // -- Instance --
-+ (instancetype)sharedController;
-
-// -- Tools --
-- (void)handleUpdateWithTorManager:(SMTorManager *)torManager oldVersion:(NSString *)oldVersion newVersion:(NSString *)newVersion infoHandler:(nullable void (^)(SMInfo *info))handler;
++ (void)startWithTorManager:(SMTorManager *)torManager infoHandler:(void (^)(SMInfo *info))handler;
 
 @end
 

@@ -1,5 +1,5 @@
 /*
- *  SMTorWindowController.m
+ *  SMTorStartController.m
  *
  *  Copyright 2016 Avérous Julien-Pierre
  *
@@ -22,7 +22,7 @@
 
 @import SMFoundation;
 
-#import "SMTorWindowController.h"
+#import "SMTorStartController.h"
 
 #import "SMTorManager.h"
 
@@ -31,11 +31,45 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /*
-** SMTorWindowController
+** SMTorStartWindowController - Interface
 */
-#pragma mark - SMTorWindowController
+#pragma mark - SMTorStartWindowController - Interface
 
-@implementation SMTorWindowController
+@interface SMTorStartWindowController : NSWindowController
+
+- (instancetype)initWithTorManager:(SMTorManager *)torManager infoHandler:(void (^)(SMInfo *info))handler;
+
+@end
+
+
+
+/*
+** SMTorStartController
+*/
+#pragma mark - SMTorStartController
+
+@implementation SMTorStartController
+
++ (void)startWithTorManager:(SMTorManager *)torManager infoHandler:(void (^)(SMInfo *info))handler
+{
+	dispatch_async(dispatch_get_main_queue(), ^{
+		
+		SMTorStartWindowController *ctrl = [[SMTorStartWindowController alloc] initWithTorManager:torManager infoHandler:handler];
+		
+		[ctrl showWindow:nil];
+	});
+}
+
+@end
+
+
+
+/*
+** SMTorStartWindowController
+*/
+#pragma mark - SMTorStartWindowController
+
+@implementation SMTorStartWindowController
 {
 	IBOutlet NSButton				*cancelButton;
 	IBOutlet NSTextField			*summaryField;
@@ -51,23 +85,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /*
-** SMTorWindowController - Instance
+** SMTorStartWindowController - Instance
 */
-#pragma mark - SMTorWindowController - Instance
-
-+ (void)startWithTorManager:(SMTorManager *)torManager infoHandler:(void (^)(SMInfo *info))handler
-{
-	dispatch_async(dispatch_get_main_queue(), ^{
-		
-		SMTorWindowController *ctrl = [[SMTorWindowController alloc] initWithTorManager:torManager infoHandler:handler];
-		
-		[ctrl showWindow:nil];
-	});
-}
+#pragma mark - SMTorStartWindowController - Instance
 
 - (instancetype)initWithTorManager:(SMTorManager *)torManager infoHandler:(void (^)(SMInfo *info))handler
 {
-	self = [super initWithWindowNibName:@"TorWindow"];
+	self = [super initWithWindowNibName:@"StartWindow"];
 	
 	if (self)
 	{
@@ -84,9 +108,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /*
-** SMTorWindowController - NSWindowController
+** SMTorStartWindowController - NSWindowController
 */
-#pragma mark - SMTorWindowController - NSWindowController
+#pragma mark - SMTorStartWindowController - NSWindowController
 
 - (void)windowDidLoad
 {
@@ -98,7 +122,7 @@ NS_ASSUME_NONNULL_BEGIN
 	[_torManager startWithInfoHandler:^(SMInfo *info) {
 		
 		dispatch_async(dispatch_get_main_queue(), ^{
-			
+
 			if ([info.domain isEqualToString:SMTorManagerInfoStartDomain] == NO)
 				return;
 			
@@ -187,9 +211,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /*
-** SMTorWindowController - IBAction
+** SMTorStartWindowController - IBAction
 */
-#pragma mark - SMTorWindowController - IBAction
+#pragma mark - SMTorStartWindowController - IBAction
 
 - (IBAction)doCancel:(id)sender
 {

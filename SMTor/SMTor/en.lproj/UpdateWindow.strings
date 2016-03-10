@@ -1,0 +1,23 @@
+/* Class = "NSTextFieldCell"; title = "<SUBTITLE-DONT-TRANSLATE>"; ObjectID = "2T2-T1-cLr"; */
+"2T2-T1-cLr.title" = "<SUBTITLE-DONT-TRANSLATE>";
+
+/* Class = "NSTextFieldCell"; title = "A new version of Tor is available."; ObjectID = "3Bd-81-Mj6"; */
+"3Bd-81-Mj6.title" = "A new version of Tor is available.";
+
+/* Class = "NSButtonCell"; title = "Remind Me Later"; ObjectID = "CX4-xf-EQL"; */
+"CX4-xf-EQL.title" = "Remind Me Later";
+
+/* Class = "NSTextFieldCell"; title = "<DOWN-DONT-TRANSLATE>"; ObjectID = "Mzx-LX-amq"; */
+"Mzx-LX-amq.title" = "<DOWN-DONT-TRANSLATE>";
+
+/* Class = "NSWindow"; title = "Tor Update"; ObjectID = "QvC-M9-y7g"; */
+"QvC-M9-y7g.title" = "Tor Update";
+
+/* Class = "NSButtonCell"; title = "<DONT-TRANSLATE>"; ObjectID = "TwA-CR-dpK"; */
+"TwA-CR-dpK.title" = "<DONT-TRANSLATE>";
+
+/* Class = "NSButtonCell"; title = "Install Update"; ObjectID = "pfM-iA-SkK"; */
+"pfM-iA-SkK.title" = "Install Update";
+
+/* Class = "NSTextFieldCell"; title = "<STATUS-DONT-TRANSLATE>"; ObjectID = "w3E-Q4-Mdy"; */
+"w3E-Q4-Mdy.title" = "<STATUS-DONT-TRANSLATE>";
