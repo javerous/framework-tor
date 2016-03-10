@@ -1,5 +1,5 @@
 /*
- *  SMTorUpdateWindowController.m
+ *  SMTorUpdateController.m
  *
  *  Copyright 2016 Avérous Julien-Pierre
  *
@@ -22,7 +22,7 @@
 
 @import SMFoundation;
 
-#import "SMTorUpdateWindowController.h"
+#import "SMTorUpdateController.h"
 
 #import "SMTorManager.h"
 
@@ -31,34 +31,31 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /*
-** SMTorUpdateWindowController - Private
+** SMTorUpdateWindowController - Interface
 */
-#pragma mark - SMTorUpdateWindowController - Private
+#pragma mark - SMTorUpdateWindowController - Interface
 
-@interface SMTorUpdateWindowController ()
+@interface SMTorUpdateWindowController : NSWindowController
+
+- (void)handleUpdateWithTorManager:(SMTorManager *)torManager oldVersion:(NSString *)oldVersion newVersion:(NSString *)newVersion infoHandler:(nullable void (^)(SMInfo *info))handler;
+
+@end
+
+
+
+/*
+** SMTorUpdateController
+*/
+#pragma mark - SMTorUpdateController
+
+@implementation SMTorUpdateController
+
++ (void)handleUpdateWithTorManager:(SMTorManager *)torManager oldVersion:(NSString *)oldVersion newVersion:(NSString *)newVersion infoHandler:(nullable void (^)(SMInfo *info))handler
 {
-	SMTorManager		*_torManager;
-	
-	dispatch_block_t	_currentCancelBlock;
-	BOOL				_updateDone;
-	
-	void (^_infoHandler)(SMInfo *info);
+	SMTorUpdateWindowController *ctrl = [[SMTorUpdateWindowController alloc] init];
+
+	[ctrl handleUpdateWithTorManager:torManager oldVersion:oldVersion newVersion:newVersion infoHandler:handler];
 }
-
-@property (strong, nonatomic)	IBOutlet NSView			*availableView;
-@property (strong, nonatomic)	IBOutlet NSTextField	*subtitleField;
-
-@property (strong, nonatomic)	IBOutlet NSView			*workingView;
-@property (strong, nonatomic)	IBOutlet NSTextField	*workingStatusField;
-@property (strong, nonatomic)	IBOutlet NSProgressIndicator *workingProgress;
-@property (strong, nonatomic)	IBOutlet NSTextField	*workingDownloadInfo;
-@property (strong, nonatomic)	IBOutlet NSButton		*workingButton;
-
-
-- (IBAction)doRemindMeLater:(id)sender;
-- (IBAction)doInstallUpdate:(id)sender;
-
-- (IBAction)doWorkingButton:(id)sender;
 
 @end
 
@@ -70,6 +67,25 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - SMTorUpdateWindowController
 
 @implementation SMTorUpdateWindowController
+{
+	IBOutlet NSView			*availableView;
+	IBOutlet NSTextField	*subtitleField;
+	
+	IBOutlet NSView					*workingView;
+	IBOutlet NSTextField			*workingStatusField;
+	IBOutlet NSProgressIndicator	*workingProgress;
+	IBOutlet NSTextField			*workingDownloadInfo;
+	IBOutlet NSButton				*workingButton;
+	
+	SMTorManager		*_torManager;
+	
+	dispatch_block_t	_currentCancelBlock;
+	BOOL				_updateDone;
+	
+	void (^_infoHandler)(SMInfo *info);
+	
+	SMTorUpdateWindowController *_selfRetain;
+}
 
 
 /*
@@ -77,27 +93,21 @@ NS_ASSUME_NONNULL_BEGIN
 */
 #pragma mark - SMTorUpdateWindowController - Instance
 
-+ (instancetype)sharedController
-{
-	static dispatch_once_t			onceToken;
-	static SMTorUpdateWindowController	*instance = nil;
-	
-	dispatch_once(&onceToken, ^{
-		instance = [[SMTorUpdateWindowController alloc] init];
-	});
-	
-	return instance;
-}
-
 - (id)init
 {
 	self = [super initWithWindowNibName:@"UpdateWindow"];
 	
 	if (self)
 	{
+		_selfRetain = self;
 	}
 	
 	return self;
+}
+
+- (void)dealloc
+{
+	//NSLog(@"SMTorUpdateWindowController dealloc");
 }
 
 - (void)windowDidLoad
@@ -122,6 +132,9 @@ NS_ASSUME_NONNULL_BEGIN
 	
 	dispatch_async(dispatch_get_main_queue(), ^{
 		
+		// Open window.
+		[self showWindow:nil];
+		
 		// Handle tor manager.
 		_torManager = torManager;
 		
@@ -138,17 +151,17 @@ NS_ASSUME_NONNULL_BEGIN
 		};
 		
 		// Place availableView.
-		[_workingView removeFromSuperview];
+		[workingView removeFromSuperview];
 		
-		_availableView.alphaValue = 1.0;
-		_workingView.alphaValue = 0.0;
+		availableView.alphaValue = 1.0;
+		workingView.alphaValue = 0.0;
 		
-		[self.window.contentView addSubview:_availableView];
+		[self.window.contentView addSubview:availableView];
 		
 		// Configure available view.
 		NSString *subtitle = [NSString stringWithFormat:SMLocalizedString(@"update_subtitle_available", @""), newVersion, oldVersion];
 		
-		_subtitleField.stringValue = subtitle;
+		subtitleField.stringValue = subtitle;
 		
 		// Show window.
 		[self showWindow:nil];
@@ -160,18 +173,18 @@ NS_ASSUME_NONNULL_BEGIN
 	// > main queue <
 	
 	// Init view state.
-	_workingStatusField.stringValue = SMLocalizedString(@"update_status_launching", @"");
+	workingStatusField.stringValue = SMLocalizedString(@"update_status_launching", @"");
 	
-	_workingDownloadInfo.stringValue = @"";
-	_workingDownloadInfo.hidden = YES;
+	workingDownloadInfo.stringValue = @"";
+	workingDownloadInfo.hidden = YES;
 	
-	_workingProgress.doubleValue = 0.0;
-	_workingProgress.indeterminate = YES;
-	_workingProgress.hidden = NO;
-	[_workingProgress startAnimation:nil];
+	workingProgress.doubleValue = 0.0;
+	workingProgress.indeterminate = YES;
+	workingProgress.hidden = NO;
+	[workingProgress startAnimation:nil];
 	
-	_workingButton.title = SMLocalizedString(@"update_button_cancel", @"");
-	_workingButton.keyEquivalent = @"\e";
+	workingButton.title = SMLocalizedString(@"update_button_cancel", @"");
+	workingButton.keyEquivalent = @"\e";
 	
 	_updateDone = NO;
 	
@@ -196,7 +209,7 @@ NS_ASSUME_NONNULL_BEGIN
 		else if (remainingTime > 0.0)
 			str = [NSString stringWithFormat:SMLocalizedString(@"update_download_progress_remaining", @""), currentStr, totalStr, SMStringFromSecondsAmount(remainingTime)];
 		
-		_workingDownloadInfo.stringValue = str;
+		workingDownloadInfo.stringValue = str;
 	};
 	
 	// Launch update.
@@ -214,7 +227,7 @@ NS_ASSUME_NONNULL_BEGIN
 						_infoHandler(info);
 
 						// Update UI.
-						_workingStatusField.stringValue = SMLocalizedString(@"update_status_retrieving_info", @"");
+						workingStatusField.stringValue = SMLocalizedString(@"update_status_retrieving_info", @"");
 						
 						break;
 					}
@@ -225,10 +238,10 @@ NS_ASSUME_NONNULL_BEGIN
 						_infoHandler(info);
 
 						// Update UI.
-						_workingStatusField.stringValue = SMLocalizedString(@"update_status_downloading_archive", @"");
+						workingStatusField.stringValue = SMLocalizedString(@"update_status_downloading_archive", @"");
 
-						_workingProgress.indeterminate = NO;
-						_workingDownloadInfo.hidden = NO;
+						workingProgress.indeterminate = NO;
+						workingDownloadInfo.hidden = NO;
 
 						archiveTotal = [info.context unsignedIntegerValue];
 						
@@ -265,13 +278,13 @@ NS_ASSUME_NONNULL_BEGIN
 							lastTimestamp = SMTimeStamp();
 						}
 						
-						_workingProgress.doubleValue = (double)archiveCurrent / (double)archiveTotal;
+						workingProgress.doubleValue = (double)archiveCurrent / (double)archiveTotal;
 						
 						// Handle download termination.
 						if (archiveCurrent == archiveTotal)
 						{
-							_workingProgress.indeterminate = YES;
-							_workingDownloadInfo.hidden = YES;
+							workingProgress.indeterminate = YES;
+							workingDownloadInfo.hidden = YES;
 							speedHelper = nil;
 						}
 						
@@ -284,7 +297,7 @@ NS_ASSUME_NONNULL_BEGIN
 						_infoHandler(info);
 
 						// Update UI.
-						_workingStatusField.stringValue = SMLocalizedString(@"update_status_staging_archive", @"");
+						workingStatusField.stringValue = SMLocalizedString(@"update_status_staging_archive", @"");
 						
 						break;
 					}
@@ -295,7 +308,7 @@ NS_ASSUME_NONNULL_BEGIN
 						_infoHandler(info);
 						
 						// Update UI.
-						_workingStatusField.stringValue = SMLocalizedString(@"update_status_checking_signature", @"");
+						workingStatusField.stringValue = SMLocalizedString(@"update_status_checking_signature", @"");
 						
 						break;
 					}
@@ -306,7 +319,7 @@ NS_ASSUME_NONNULL_BEGIN
 						_infoHandler(info);
 
 						// Update UI.
-						_workingStatusField.stringValue = SMLocalizedString(@"update_status_relaunching_tor", @"");
+						workingStatusField.stringValue = SMLocalizedString(@"update_status_relaunching_tor", @"");
 						
 						break;
 					}
@@ -317,10 +330,10 @@ NS_ASSUME_NONNULL_BEGIN
 						_infoHandler(info);
 						
 						// Update UI.
-						_workingStatusField.stringValue = SMLocalizedString(@"update_status_update_done", @"");
+						workingStatusField.stringValue = SMLocalizedString(@"update_status_update_done", @"");
 						
-						_workingButton.title = SMLocalizedString(@"update_button_done", @"");
-						_workingButton.keyEquivalent = @"\r";
+						workingButton.title = SMLocalizedString(@"update_button_done", @"");
+						workingButton.keyEquivalent = @"\r";
 						
 						_updateDone = YES;
 
@@ -336,13 +349,13 @@ NS_ASSUME_NONNULL_BEGIN
 				_infoHandler(info);
 				
 				// Update UI.
-				_workingProgress.hidden = YES;
+				workingProgress.hidden = YES;
 
-				_workingDownloadInfo.stringValue = [NSString stringWithFormat:SMLocalizedString(@"update_error_fmt", @""), [info renderMessage]];
-				_workingDownloadInfo.hidden = NO;
+				workingDownloadInfo.stringValue = [NSString stringWithFormat:SMLocalizedString(@"update_error_fmt", @""), [info renderMessage]];
+				workingDownloadInfo.hidden = NO;
 
-				_workingStatusField.stringValue = SMLocalizedString(@"update_status_error", @"");
-				_workingButton.title = SMLocalizedString(@"update_button_close", @"");
+				workingStatusField.stringValue = SMLocalizedString(@"update_status_error", @"");
+				workingButton.title = SMLocalizedString(@"update_button_close", @"");
 			}
 		});
 	}];
@@ -358,13 +371,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (IBAction)doRemindMeLater:(id)sender
 {
 	[self close];
+	_selfRetain = nil;
 }
 
 - (IBAction)doInstallUpdate:(id)sender
 {
 	// Compute new rect.
-	NSSize oldSize = [_availableView frame].size;
-	NSSize newSize = [_workingView frame].size;
+	NSSize oldSize = [availableView frame].size;
+	NSSize newSize = [workingView frame].size;
 	
 	NSRect frame = [self.window frame];
 	NSRect rect;
@@ -372,18 +386,18 @@ NS_ASSUME_NONNULL_BEGIN
 	rect.size = NSMakeSize(frame.size.width + (newSize.width - oldSize.width), frame.size.height + (newSize.height - oldSize.height));
 	rect.origin = NSMakePoint(frame.origin.x + (frame.size.width - rect.size.width) / 2.0, frame.origin.y + (frame.size.height - rect.size.height) / 2.0);
 
-	_availableView.alphaValue = 1.0;
-	_workingView.alphaValue = 0.0;
+	availableView.alphaValue = 1.0;
+	workingView.alphaValue = 0.0;
 	
-	[self.window.contentView addSubview:_workingView];
+	[self.window.contentView addSubview:workingView];
 
 	[NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
 		context.duration = 0.1;
-		_availableView.animator.alphaValue = 0.0;
-		_workingView.animator.alphaValue = 1.0;
+		availableView.animator.alphaValue = 0.0;
+		workingView.animator.alphaValue = 1.0;
 		[self.window.animator setFrame:rect display:YES];
 	} completionHandler:^{
-		[_availableView removeFromSuperview];
+		[availableView removeFromSuperview];
 		[self _doUpdate];
 	}];
 }
@@ -396,6 +410,7 @@ NS_ASSUME_NONNULL_BEGIN
 	_currentCancelBlock = nil;
 	
 	[self close];
+	_selfRetain = nil;
 }
 
 @end

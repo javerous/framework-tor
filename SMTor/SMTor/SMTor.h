@@ -33,5 +33,5 @@ FOUNDATION_EXPORT const unsigned char SMTorVersionString[];
 #import <SMTor/SMTorManager.h>
 #import <SMTor/SMTorConfiguration.h>
 
-#import <SMTor/SMTorWindowController.h>
-#import <SMTor/SMTorUpdateWindowController.h>
+#import <SMTor/SMTorStartController.h>
+#import <SMTor/SMTorUpdateController.h>
