@@ -27,14 +27,12 @@
 
 /* Begin PBXFileReference section */
 		E840D8101C769EC40093ABE3 /* SMFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SMFoundation.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/Workspace-cnxnxbikgaelbpbindjrnwxwsaut/Build/Products/Debug/SMFoundation.framework"; sourceTree = "<group>"; };
-		E86F5AC91C91D04600C155A6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/UpdateWindow.strings; sourceTree = "<group>"; };
 		E86F5ACB1C91D04F00C155A6 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/UpdateWindow.strings; sourceTree = "<group>"; };
 		E876913B1C640D1A00C3B537 /* SMTor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SMTor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E876913E1C640D1A00C3B537 /* SMTor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SMTor.h; sourceTree = "<group>"; };
 		E87691401C640D1A00C3B537 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E87691541C64115E00C3B537 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/StartWindow.xib; sourceTree = "<group>"; };
 		E87691561C64115E00C3B537 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/UpdateWindow.xib; sourceTree = "<group>"; };
-		E876915A1C64116B00C3B537 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/StartWindow.strings; sourceTree = "<group>"; };
 		E876915B1C64117D00C3B537 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/StartWindow.strings; sourceTree = "<group>"; };
 		E876915C1C6411B800C3B537 /* SMTorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTorManager.h; sourceTree = "<group>"; };
 		E876915D1C6411B800C3B537 /* SMTorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTorManager.m; sourceTree = "<group>"; };
@@ -249,7 +247,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				E87691541C64115E00C3B537 /* Base */,
-				E876915A1C64116B00C3B537 /* en */,
 				E876915B1C64117D00C3B537 /* fr */,
 			);
 			name = StartWindow.xib;
@@ -259,7 +256,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				E87691561C64115E00C3B537 /* Base */,
-				E86F5AC91C91D04600C155A6 /* en */,
 				E86F5ACB1C91D04F00C155A6 /* fr */,
 			);
 			name = UpdateWindow.xib;
