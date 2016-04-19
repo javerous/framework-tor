@@ -20,8 +20,7 @@
  *
  */
 
-@import SMFoundation;
-
+#import <SMFoundation/SMFoundation.h>
 #import <CommonCrypto/CommonCrypto.h>
 
 #include <signal.h>
