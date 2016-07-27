@@ -382,7 +382,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 		else
 		{
 			if (handler)
-				dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), handler);
+				dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), (dispatch_block_t)handler);
 		}
 	});
 }
@@ -1729,6 +1729,8 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 					{
 						ctrlKeyHexa = aCtrlKeyHexa;
 						
+						SMDebugLog(@"Tor Control Password: %@", ctrlKeyHexa);
+						
 						dispatch_async(_localQueue, ^{
 							_task = task;
 						});
@@ -2187,6 +2189,9 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 		
 		if (!_socket)
 			return nil;
+		
+		SMDebugLog(@"Connected to Tor Control (%@:%d)", ip, port);
+
 		
 		_socket.delegate = self;
 		
