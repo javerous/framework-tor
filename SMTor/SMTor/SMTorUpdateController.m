@@ -219,9 +219,9 @@ NS_ASSUME_NONNULL_BEGIN
 			
 			if (info.kind == SMInfoInfo)
 			{
-				switch ((SMTorManagerEventUpdate)info.code)
+				switch ((SMTorEventUpdate)info.code)
 				{
-					case SMTorManagerEventUpdateArchiveInfoRetrieving:
+					case SMTorEventUpdateArchiveInfoRetrieving:
 					{
 						// Log
 						_infoHandler(info);
@@ -232,7 +232,7 @@ NS_ASSUME_NONNULL_BEGIN
 						break;
 					}
 						
-					case SMTorManagerEventUpdateArchiveSize:
+					case SMTorEventUpdateArchiveSize:
 					{
 						// Log.
 						_infoHandler(info);
@@ -256,7 +256,7 @@ NS_ASSUME_NONNULL_BEGIN
 						break;
 					}
 					
-					case SMTorManagerEventUpdateArchiveDownloading:
+					case SMTorEventUpdateArchiveDownloading:
 					{
 						// Log.
 						if (loggedDownload == NO)
@@ -291,7 +291,7 @@ NS_ASSUME_NONNULL_BEGIN
 						break;
 					}
 						
-					case SMTorManagerEventUpdateArchiveStage:
+					case SMTorEventUpdateArchiveStage:
 					{
 						// Log.
 						_infoHandler(info);
@@ -302,7 +302,7 @@ NS_ASSUME_NONNULL_BEGIN
 						break;
 					}
 					
-					case SMTorManagerEventUpdateSignatureCheck:
+					case SMTorEventUpdateSignatureCheck:
 					{
 						// Log.
 						_infoHandler(info);
@@ -313,7 +313,7 @@ NS_ASSUME_NONNULL_BEGIN
 						break;
 					}
 						
-					case SMTorManagerEventUpdateRelaunch:
+					case SMTorEventUpdateRelaunch:
 					{
 						// Log.
 						_infoHandler(info);
@@ -324,7 +324,7 @@ NS_ASSUME_NONNULL_BEGIN
 						break;
 					}
 						
-					case SMTorManagerEventUpdateDone:
+					case SMTorEventUpdateDone:
 					{
 						// Log.
 						_infoHandler(info);

@@ -43,13 +43,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 	// Hidden service.
 	copy.hiddenService = _hiddenService;
+	copy.hiddenServicePrivateKey = [_hiddenServicePrivateKey copy];
 	copy.hiddenServiceRemotePort = _hiddenServiceRemotePort;
 	copy.hiddenServiceLocalHost = [_hiddenServiceLocalHost copy];
 	copy.hiddenServiceLocalPort = _hiddenServiceLocalPort;
 
 	// Path.
 	copy.binaryPath = [_binaryPath copy];
-	copy.identityPath = [_identityPath copy];
 	copy.dataPath = [_dataPath copy];
 
 	return copy;
@@ -68,11 +68,11 @@ NS_ASSUME_NONNULL_BEGIN
 	
 	if (configuration.hiddenService)
 	{
+		differ = differ || (_hiddenServicePrivateKey != configuration.hiddenServicePrivateKey);
+		differ = differ || ([_hiddenServicePrivateKey isEqualToString:(NSString *)configuration.hiddenServicePrivateKey] == NO);
 		differ = differ || (_hiddenServiceRemotePort != configuration.hiddenServiceRemotePort);
 		differ = differ || ([_hiddenServiceLocalHost isEqualToString:configuration.hiddenServiceLocalHost] == NO);
 		differ = differ || (_hiddenServiceLocalPort != configuration.hiddenServiceLocalPort);
-		
-		differ = differ || ([_identityPath isEqualToString:configuration.identityPath] == NO);
 	}
 	
 	// Path.
@@ -96,8 +96,6 @@ NS_ASSUME_NONNULL_BEGIN
 		valid = valid && (_hiddenServiceRemotePort > 1);
 		valid = valid && (_hiddenServiceLocalHost != nil);
 		valid = valid && (_hiddenServiceLocalPort > 1);
-		
-		valid = valid && (_identityPath != nil);
 	}
 
 	// Path.

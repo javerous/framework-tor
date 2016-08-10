@@ -123,7 +123,7 @@ NS_ASSUME_NONNULL_BEGIN
 		
 		dispatch_async(dispatch_get_main_queue(), ^{
 
-			if ([info.domain isEqualToString:SMTorManagerInfoStartDomain] == NO)
+			if ([info.domain isEqualToString:SMTorInfoStartDomain] == NO)
 				return;
 			
 			// Forward info.
@@ -134,9 +134,9 @@ NS_ASSUME_NONNULL_BEGIN
 			{
 				case SMInfoInfo:
 				{
-					switch ((SMTorManagerEventStart)info.code)
+					switch ((SMTorEventStart)info.code)
 					{
-						case SMTorManagerEventStartBootstrapping:
+						case SMTorEventStartBootstrapping:
 						{
 							NSDictionary	*context = info.context;
 							NSString		*summary = context[@"summary"];
@@ -164,7 +164,7 @@ NS_ASSUME_NONNULL_BEGIN
 							break;
 						}
 							
-						case SMTorManagerEventStartDone:
+						case SMTorEventStartDone:
 						{
 							[self close];
 							break;
@@ -179,9 +179,9 @@ NS_ASSUME_NONNULL_BEGIN
 					
 				case SMInfoWarning:
 				{
-					switch ((SMTorManagerWarningStart)info.code)
+					switch ((SMTorWarningStart)info.code)
 					{
-						case SMTorManagerWarningStartCanceled:
+						case SMTorWarningStartCanceled:
 						{
 							[self close];
 							break;
