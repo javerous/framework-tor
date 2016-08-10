@@ -10,6 +10,10 @@
 		E840D8111C769EC40093ABE3 /* SMFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E840D8101C769EC40093ABE3 /* SMFoundation.framework */; };
 		E845A3471CC6B7F000B98398 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E845A3461CC6B7F000B98398 /* Cocoa.framework */; };
 		E845A3491CC6B82100B98398 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E845A3481CC6B82100B98398 /* Security.framework */; };
+		E858FB331D5B968C0002B0A5 /* SMTorDownloadContext.h in Headers */ = {isa = PBXBuildFile; fileRef = E858FB311D5B968C0002B0A5 /* SMTorDownloadContext.h */; };
+		E858FB341D5B968C0002B0A5 /* SMTorDownloadContext.m in Sources */ = {isa = PBXBuildFile; fileRef = E858FB321D5B968C0002B0A5 /* SMTorDownloadContext.m */; };
+		E858FB511D5B9A2F0002B0A5 /* SMTorOperations.h in Headers */ = {isa = PBXBuildFile; fileRef = E858FB4F1D5B9A2F0002B0A5 /* SMTorOperations.h */; };
+		E858FB521D5B9A2F0002B0A5 /* SMTorOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = E858FB501D5B9A2F0002B0A5 /* SMTorOperations.m */; };
 		E876913F1C640D1A00C3B537 /* SMTor.h in Headers */ = {isa = PBXBuildFile; fileRef = E876913E1C640D1A00C3B537 /* SMTor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E87691571C64115E00C3B537 /* StartWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E87691531C64115E00C3B537 /* StartWindow.xib */; };
 		E87691581C64115E00C3B537 /* UpdateWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E87691551C64115E00C3B537 /* UpdateWindow.xib */; };
@@ -25,12 +29,21 @@
 		E8D93C981C67AAF100CB0C82 /* SMTorConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = E8D93C961C67AAF100CB0C82 /* SMTorConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E8D93C991C67AAF100CB0C82 /* SMTorConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E8D93C971C67AAF100CB0C82 /* SMTorConfiguration.m */; };
 		E8D93C9F1C67FC2400CB0C82 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E8D93CA11C67FC2400CB0C82 /* Localizable.strings */; };
+		E8E49D7B1D5B91B0007E2781 /* SMTorControl.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E49D791D5B91B0007E2781 /* SMTorControl.h */; };
+		E8E49D7C1D5B91B0007E2781 /* SMTorControl.m in Sources */ = {isa = PBXBuildFile; fileRef = E8E49D7A1D5B91B0007E2781 /* SMTorControl.m */; };
+		E8E49D7F1D5B9341007E2781 /* SMTorTask.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E49D7D1D5B9341007E2781 /* SMTorTask.h */; };
+		E8E49D801D5B9341007E2781 /* SMTorTask.m in Sources */ = {isa = PBXBuildFile; fileRef = E8E49D7E1D5B9341007E2781 /* SMTorTask.m */; };
+		E8E49D821D5B9526007E2781 /* SMTorInformations.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E49D811D5B94DA007E2781 /* SMTorInformations.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		E840D8101C769EC40093ABE3 /* SMFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SMFoundation.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/Workspace-cnxnxbikgaelbpbindjrnwxwsaut/Build/Products/Debug/SMFoundation.framework"; sourceTree = "<group>"; };
 		E845A3461CC6B7F000B98398 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		E845A3481CC6B82100B98398 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		E858FB311D5B968C0002B0A5 /* SMTorDownloadContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTorDownloadContext.h; sourceTree = "<group>"; };
+		E858FB321D5B968C0002B0A5 /* SMTorDownloadContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTorDownloadContext.m; sourceTree = "<group>"; };
+		E858FB4F1D5B9A2F0002B0A5 /* SMTorOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTorOperations.h; sourceTree = "<group>"; };
+		E858FB501D5B9A2F0002B0A5 /* SMTorOperations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTorOperations.m; sourceTree = "<group>"; };
 		E86F5ACB1C91D04F00C155A6 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/UpdateWindow.strings; sourceTree = "<group>"; };
 		E876913B1C640D1A00C3B537 /* SMTor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SMTor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E876913E1C640D1A00C3B537 /* SMTor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SMTor.h; sourceTree = "<group>"; };
@@ -46,12 +59,18 @@
 		E87691631C6411BF00C3B537 /* SMTorUpdateController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTorUpdateController.m; sourceTree = "<group>"; };
 		E87691721C6411CC00C3B537 /* SMPublicKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMPublicKey.h; sourceTree = "<group>"; };
 		E876918A1C64129E00C3B537 /* tor.tgz */ = {isa = PBXFileReference; lastKnownFileType = file; path = tor.tgz; sourceTree = "<group>"; };
+		E8959BBD1D5B9BA5000E7F9B /* SMTorConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SMTorConstants.h; sourceTree = "<group>"; };
 		E89824281C73E2BB00600E66 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		E8D93C961C67AAF100CB0C82 /* SMTorConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTorConfiguration.h; sourceTree = "<group>"; };
 		E8D93C971C67AAF100CB0C82 /* SMTorConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTorConfiguration.m; sourceTree = "<group>"; };
 		E8D93C9C1C67B09300CB0C82 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		E8D93CA01C67FC2400CB0C82 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E8D93CA21C67FC2500CB0C82 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		E8E49D791D5B91B0007E2781 /* SMTorControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTorControl.h; sourceTree = "<group>"; };
+		E8E49D7A1D5B91B0007E2781 /* SMTorControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTorControl.m; sourceTree = "<group>"; };
+		E8E49D7D1D5B9341007E2781 /* SMTorTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTorTask.h; sourceTree = "<group>"; };
+		E8E49D7E1D5B9341007E2781 /* SMTorTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTorTask.m; sourceTree = "<group>"; };
+		E8E49D811D5B94DA007E2781 /* SMTorInformations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SMTorInformations.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +130,7 @@
 		E87691501C64112D00C3B537 /* Public */ = {
 			isa = PBXGroup;
 			children = (
+				E8E49D811D5B94DA007E2781 /* SMTorInformations.h */,
 				E876915C1C6411B800C3B537 /* SMTorManager.h */,
 				E876915D1C6411B800C3B537 /* SMTorManager.m */,
 				E8D93C961C67AAF100CB0C82 /* SMTorConfiguration.h */,
@@ -127,6 +147,15 @@
 			isa = PBXGroup;
 			children = (
 				E87691721C6411CC00C3B537 /* SMPublicKey.h */,
+				E8959BBD1D5B9BA5000E7F9B /* SMTorConstants.h */,
+				E8E49D7D1D5B9341007E2781 /* SMTorTask.h */,
+				E8E49D7E1D5B9341007E2781 /* SMTorTask.m */,
+				E858FB311D5B968C0002B0A5 /* SMTorDownloadContext.h */,
+				E858FB321D5B968C0002B0A5 /* SMTorDownloadContext.m */,
+				E8E49D791D5B91B0007E2781 /* SMTorControl.h */,
+				E8E49D7A1D5B91B0007E2781 /* SMTorControl.m */,
+				E858FB4F1D5B9A2F0002B0A5 /* SMTorOperations.h */,
+				E858FB501D5B9A2F0002B0A5 /* SMTorOperations.m */,
 			);
 			name = Private;
 			sourceTree = "<group>";
@@ -158,11 +187,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E858FB331D5B968C0002B0A5 /* SMTorDownloadContext.h in Headers */,
 				E876913F1C640D1A00C3B537 /* SMTor.h in Headers */,
+				E8E49D7F1D5B9341007E2781 /* SMTorTask.h in Headers */,
 				E876915E1C6411B800C3B537 /* SMTorManager.h in Headers */,
 				E87691661C6411BF00C3B537 /* SMTorUpdateController.h in Headers */,
+				E8E49D821D5B9526007E2781 /* SMTorInformations.h in Headers */,
 				E87691831C6411CC00C3B537 /* SMPublicKey.h in Headers */,
+				E8E49D7B1D5B91B0007E2781 /* SMTorControl.h in Headers */,
 				E87691641C6411BF00C3B537 /* SMTorStartController.h in Headers */,
+				E858FB511D5B9A2F0002B0A5 /* SMTorOperations.h in Headers */,
 				E8D93C981C67AAF100CB0C82 /* SMTorConfiguration.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -194,7 +228,7 @@
 		E87691321C640D1A00C3B537 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Julien-Pierre Avérous";
 				TargetAttributes = {
 					E876913A1C640D1A00C3B537 = {
@@ -241,9 +275,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E858FB341D5B968C0002B0A5 /* SMTorDownloadContext.m in Sources */,
+				E8E49D801D5B9341007E2781 /* SMTorTask.m in Sources */,
 				E8D93C991C67AAF100CB0C82 /* SMTorConfiguration.m in Sources */,
 				E87691651C6411BF00C3B537 /* SMTorStartController.m in Sources */,
 				E87691671C6411BF00C3B537 /* SMTorUpdateController.m in Sources */,
+				E858FB521D5B9A2F0002B0A5 /* SMTorOperations.m in Sources */,
+				E8E49D7C1D5B91B0007E2781 /* SMTorControl.m in Sources */,
 				E876915F1C6411B800C3B537 /* SMTorManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -285,6 +323,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -293,8 +332,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -330,6 +371,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -338,8 +380,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";

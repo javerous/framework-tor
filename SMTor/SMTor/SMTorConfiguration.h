@@ -34,21 +34,22 @@ NS_ASSUME_NONNULL_BEGIN
 @interface SMTorConfiguration : NSObject <NSCopying>
 
 // -- Socks --
-@property (nonatomic) NSString	*socksHost;
-@property (nonatomic) uint16_t	socksPort;
+@property (nonatomic)			NSString	*socksHost;
+@property (nonatomic)			uint16_t	socksPort;
 
 // -- Hidden Service --
-@property (nonatomic) BOOL		hiddenService;
+@property (nonatomic)			BOOL		hiddenService;
 
-@property (nonatomic) uint16_t	hiddenServiceRemotePort;
+@property (nullable, nonatomic) NSString	*hiddenServicePrivateKey;
 
-@property (nonatomic) NSString	*hiddenServiceLocalHost;
-@property (nonatomic) uint16_t	hiddenServiceLocalPort;
+@property (nonatomic)			uint16_t	hiddenServiceRemotePort;
+
+@property (nonatomic)			NSString	*hiddenServiceLocalHost;
+@property (nonatomic)			uint16_t	hiddenServiceLocalPort;
 
 // -- Path --
-@property (nonatomic) NSString	*binaryPath;
-@property (nonatomic) NSString	*identityPath;
-@property (nonatomic) NSString	*dataPath;
+@property (nonatomic)			NSString	*binaryPath;
+@property (nonatomic)			NSString	*dataPath;
 
 
 // -- Tools --
