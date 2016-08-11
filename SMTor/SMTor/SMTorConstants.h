@@ -1,39 +1,56 @@
-//
-//  SMTorConstants.h
-//  SMTor
-//
-//  Created by Julien-Pierre Avérous on 10/08/2016.
-//  Copyright © 2016 Julien-Pierre Avérous. All rights reserved.
-//
+/*
+ *  SMTorConstants.h
+ *
+ *  Copyright 2016 Avérous Julien-Pierre
+ *
+ *  This file is part of SMTor.
+ *
+ *  SMTor is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  SMTor is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with SMTor.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
-#ifndef SMTorConstants_h
-#define SMTorConstants_h
+
+#pragma once
+
 
 // Control.
 #define SMTorControlHostFile	@"tor_ctrl"
 
-// Binary files.
+
+// Local binary directory.
+// > Root.
 #define SMTorFileBinSignature	@"Signature"
 #define SMTorFileBinBinaries	@"Binaries"
 #define SMTorFileBinInfo		@"Info.plist"
 
-// Binary tor.
+// > Binaries > tor.
 #define SMTorFileBinTor			@"tor"
 
-// Binary info.
+// Info.plist > keys.
 #define SMTorKeyInfoFiles		@"files"
 #define SMTorKeyInfoTorVersion	@"tor_version"
 #define SMTorKeyInfoHash		@"hash"
 
-// URLs
+
+// Remote archive.
+// > URLs.
 #define SMTorBaseUpdateURL			@"http://www.sourcemac.com/tor/%@"
 #define SMTorInfoUpdateURL			@"http://www.sourcemac.com/tor/info.plist"
 #define SMTorInfoSignatureUpdateURL	@"http://www.sourcemac.com/tor/info.plist.sig"
 
-// Remote archive.
+// > info.plist > keys.
 #define SMTorKeyArchiveSize		@"size"
 #define SMTorKeyArchiveName		@"name"
 #define SMTorKeyArchiveVersion	@"version"
 #define SMTorKeyArchiveHash		@"hash"
-
-#endif /* SMTorConstants_h */

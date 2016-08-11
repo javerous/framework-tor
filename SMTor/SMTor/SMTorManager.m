@@ -28,6 +28,7 @@
 
 #import "SMTorConfiguration.h"
 
+#import "SMPublicKey.h"
 #import "SMTorConstants.h"
 
 #import "SMTorTask.h"
@@ -299,7 +300,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 
 			dispatch_block_t cancelHandler;
 			
-			cancelHandler = [SMTorOperations operationRetrieveRemoteInfoWithURLSession:_urlSession completionHandler:^(SMInfo *info) {
+			cancelHandler = [self.class operationRetrieveRemoteInfoWithURLSession:_urlSession completionHandler:^(SMInfo *info) {
 				
 				if (info.kind == SMInfoError)
 				{
@@ -413,7 +414,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 			// Retrieve remote informations.
 			dispatch_block_t opCancel;
 
-			opCancel = [SMTorOperations operationRetrieveRemoteInfoWithURLSession:_urlSession completionHandler:^(SMInfo *info) {
+			opCancel = [self.class operationRetrieveRemoteInfoWithURLSession:_urlSession completionHandler:^(SMInfo *info) {
 				
 				if (info.kind == SMInfoError)
 				{
@@ -856,6 +857,121 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 			return;
 		}
 	}
+}
+
+
+
+/*
+** SMTorManager - Helpers
+*/
+#pragma mark - SMTorManager - Helpers
+
++ (dispatch_block_t)operationRetrieveRemoteInfoWithURLSession:(NSURLSession *)urlSession completionHandler:(void (^)(SMInfo *info))handler
+{
+	NSAssert(handler, @"handler is nil");
+	
+	SMOperationsQueue *queue = [[SMOperationsQueue alloc] init];
+	
+	// -- Get remote info --
+	__block NSData *remoteInfoData = nil;
+	
+	[queue scheduleCancelableBlock:^(SMOperationsControl ctrl, SMOperationsAddCancelBlock addCancelBlock) {
+		
+		// Create task.
+		NSURL					*url = [NSURL URLWithString:SMTorInfoUpdateURL];
+		NSURLSessionDataTask	*task;
+		
+		task = [urlSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+			
+			// Check error.
+			if (error)
+			{
+				handler([SMInfo infoOfKind:SMInfoError domain:SMTorInfoOperationDomain code:SMTorErrorOperationNetwork context:error]);
+				ctrl(SMOperationsControlFinish);
+				return;
+			}
+			
+			// Hold data.
+			remoteInfoData = data;
+			
+			// Continue.
+			ctrl(SMOperationsControlContinue);
+		}];
+		
+		// Resume task.
+		[task resume];
+		
+		// Cancellation block.
+		addCancelBlock(^{
+			SMDebugLog(@"<cancel operationRetrieveRemoteInfoWithURLSession (Get remote info)>");
+			[task cancel];
+		});
+	}];
+	
+	// -- Get signature, check it & parse plist --
+	__block NSDictionary *remoteInfo = nil;
+	
+	[queue scheduleCancelableBlock:^(SMOperationsControl ctrl, SMOperationsAddCancelBlock addCancelBlock) {
+		
+		// Create task.
+		NSURL					*url = [NSURL URLWithString:SMTorInfoSignatureUpdateURL];
+		NSURLSessionDataTask	*task;
+		
+		task = [urlSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+			
+			// Check error.
+			if (data.length == 0 || error)
+			{
+				handler([SMInfo infoOfKind:SMInfoError domain:SMTorInfoOperationDomain code:SMTorErrorOperationNetwork context:error]);
+				ctrl(SMOperationsControlFinish);
+				return;
+			}
+			
+			// Check content.
+			NSData *publicKey = [[NSData alloc] initWithBytesNoCopy:(void *)kPublicKey length:sizeof(kPublicKey) freeWhenDone:NO];
+			
+			if ([SMDataSignature validateSignature:data forData:remoteInfoData withPublicKey:publicKey] == NO)
+			{
+				handler([SMInfo infoOfKind:SMInfoError domain:SMTorInfoOperationDomain code:SMTorErrorOperationSignature context:error]);
+				ctrl(SMOperationsControlFinish);
+				return;
+			}
+			
+			// Parse content.
+			NSError *pError = nil;
+			
+			remoteInfo = [NSPropertyListSerialization propertyListWithData:remoteInfoData options:NSPropertyListImmutable format:nil error:&pError];
+			
+			if (!remoteInfo)
+			{
+				handler([SMInfo infoOfKind:SMInfoError domain:SMTorInfoOperationDomain code:SMTorErrorInternal context:pError]);
+				ctrl(SMOperationsControlFinish);
+				return;
+			}
+			
+			// Give result.
+			handler([SMInfo infoOfKind:SMInfoInfo domain:SMTorInfoOperationDomain code:SMTorEventOperationInfo context:remoteInfo]);
+			handler([SMInfo infoOfKind:SMInfoInfo domain:SMTorInfoOperationDomain code:SMTorEventOperationDone context:remoteInfo]);
+		}];
+		
+		// Resume task.
+		[task resume];
+		
+		// Cancellation block.
+		addCancelBlock(^{
+			SMDebugLog(@"<cancel operationRetrieveRemoteInfoWithURLSession (Get signature, check it & parse plist)>");
+			[task cancel];
+		});
+	}];
+	
+	// Queue start.
+	[queue start];
+	
+	// Cancel block.
+	return ^{
+		SMDebugLog(@"<cancel operationRetrieveRemoteInfoWithURLSession (global)>");
+		[queue cancel];
+	};
 }
 
 
