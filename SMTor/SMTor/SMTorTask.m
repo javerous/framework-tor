@@ -112,11 +112,15 @@ static NSString *hexa_from_data(NSData *data);
 
 - (void)startWithConfiguration:(SMTorConfiguration *)configuration logHandler:(nullable void (^)(SMTorLogKind kind, NSString *log))logHandler completionHandler:(void (^)(SMInfo *info))handler
 {
+	[self startWithConfiguration:configuration tryCounter:0 logHandler:logHandler completionHandler:handler];
+}
+
+- (void)startWithConfiguration:(SMTorConfiguration *)configuration tryCounter:(NSUInteger)tryCounter logHandler:(nullable void (^)(SMTorLogKind kind, NSString *log))logHandler completionHandler:(void (^)(SMInfo *info))handler
+{
 	NSAssert(configuration, @"configuration is nil");
 	NSAssert(handler, @"handler is nil");
 	
 #if defined(DEBUG) && DEBUG
-	
 	// To speed up debugging, if we are building in debug mode, do not launch a new tor instance if there is already one running.
 	
 	int count = proc_listpids(PROC_ALL_PIDS, 0, NULL, 0);
@@ -159,7 +163,6 @@ static NSString *hexa_from_data(NSData *data);
 		free(pids);
 	}
 #endif
-	
 	
 	[_opQueue scheduleBlock:^(SMOperationsControl opCtrl) {
 		
@@ -220,8 +223,31 @@ static NSString *hexa_from_data(NSData *data);
 				
 				if (info.kind == SMInfoError)
 				{
-					errorInfo = [SMInfo infoOfKind:SMInfoError domain:SMTorInfoStartDomain code:SMTorErrorStartSignature info:info];
-					ctrl(SMOperationsControlFinish);
+					// Signature is not good. Retry by removing file (and make us re-staging).
+					if (tryCounter == 0)
+					{
+						// Remove current staging.
+						NSString *torBinPath = configuration.binaryPath;
+						NSString *signaturePath = [torBinPath stringByAppendingPathComponent:SMTorFileBinSignature];
+						NSString *binariesPath = [torBinPath stringByAppendingPathComponent:SMTorFileBinBinaries];
+						NSString *infoPath = [torBinPath stringByAppendingPathComponent:SMTorFileBinInfo];
+						
+						[[NSFileManager defaultManager] removeItemAtPath:signaturePath error:nil];
+						[[NSFileManager defaultManager] removeItemAtPath:binariesPath error:nil];
+						[[NSFileManager defaultManager] removeItemAtPath:infoPath error:nil];
+
+						// Try a new start.
+						[self startWithConfiguration:configuration tryCounter:(tryCounter + 1) logHandler:logHandler completionHandler:handler];
+						
+						// Give a warning to user - Note: re-start wait on opQueue for this finish.
+						errorInfo = [SMInfo infoOfKind:SMInfoWarning domain:SMTorInfoStartDomain code:SMTorWarningStartCorruptedRetry info:info];
+						ctrl(SMOperationsControlFinish);
+					}
+					else
+					{
+						errorInfo = [SMInfo infoOfKind:SMInfoError domain:SMTorInfoStartDomain code:SMTorErrorStartSignature info:info];
+						ctrl(SMOperationsControlFinish);
+					}
 				}
 				else if (info.kind == SMInfoInfo)
 				{
@@ -261,7 +287,6 @@ static NSString *hexa_from_data(NSData *data);
 			}];
 		}];
 		
-		
 		// -- Wait control info --
 		__block NSString *torCtrlAddress = nil;
 		__block NSString *torCtrlPort = nil;
@@ -275,6 +300,7 @@ static NSString *hexa_from_data(NSData *data);
 			{
 				errorInfo = [SMInfo infoOfKind:SMInfoError domain:SMTorInfoStartDomain code:SMTorErrorStartConfiguration];
 				ctrl(SMOperationsControlFinish);
+				return;
 			}
 			
 			// Wait for file appearance.
@@ -526,8 +552,16 @@ static NSString *hexa_from_data(NSData *data);
 				handler([SMInfo infoOfKind:SMInfoInfo domain:SMTorInfoStartDomain code:SMTorEventStartDone]);
 			}
 			
-			// Continue on next operation.
-			opCtrl(SMOperationsControlContinue);
+			// Continue on next operation
+			dispatch_async(_localQueue, ^{
+				
+				_currentStartOperation = nil;
+				
+				if (errorInfo || canceled)
+					_isRunning = NO;
+				
+				opCtrl(SMOperationsControlContinue);
+			});
 		};
 		
 		// Start.

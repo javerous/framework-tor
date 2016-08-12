@@ -154,7 +154,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 #pragma mark - SMTorManager - Life
 
 - (void)startWithInfoHandler:(nullable void (^)(SMInfo *info))handler
-{	
+{
 	if (!handler)
 		handler = ^(SMInfo *error) { };
 
@@ -495,7 +495,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 					[_torTask removeDownloadContextForKey:@(task.taskIdentifier)];
 					
 					// > Check hash.
-					if ([[aContext sha1] isEqualToData:remoteHash] == NO)
+					if ([[aContext sha256] isEqualToData:remoteHash] == NO)
 					{
 						handler([SMInfo infoOfKind:SMInfoError domain:SMTorInfoUpdateDomain code:SMTorErrorUpdateArchiveDownload context:error]);
 						ctrl(SMOperationsControlFinish);
@@ -1060,6 +1060,15 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 							SMInfoTextKey : @"tor_start_warning_canceled",
 							SMInfoLocalizableKey : @YES,
 						  };
+					}
+						
+					case SMTorWarningStartCorruptedRetry:
+					{
+						return @{
+							SMInfoNameKey : @"SMTorWarningStartCorruptedRetry",
+							SMInfoTextKey : @"tor_start_warning_corrupted_retry",
+							SMInfoLocalizableKey : @YES,
+						};
 					}
 				}
 				break;

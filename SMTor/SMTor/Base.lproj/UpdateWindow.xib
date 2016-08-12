@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10115" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11191" systemVersion="15G31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10115"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11191"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SMTorUpdateWindowController">
@@ -23,7 +22,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="240" width="585" height="155"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
             <view key="contentView" id="EiT-Mj-1SZ">
                 <rect key="frame" x="0.0" y="0.0" width="585" height="155"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -38,7 +37,7 @@
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="tor-logo" id="Rjc-li-Xza"/>
                 </imageView>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PBn-wq-Cgn">
-                    <rect key="frame" x="90" y="118" width="214" height="17"/>
+                    <rect key="frame" x="100" y="118" width="214" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="A new version of Tor is available." id="3Bd-81-Mj6">
                         <font key="font" metaFont="systemBold"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -46,7 +45,7 @@
                     </textFieldCell>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rRV-wf-tdQ">
-                    <rect key="frame" x="90" y="96" width="176" height="14"/>
+                    <rect key="frame" x="100" y="96" width="176" height="14"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="&lt;SUBTITLE-DONT-TRANSLATE&gt;" id="2T2-T1-cLr">
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -85,12 +84,12 @@ Gw
                 <constraint firstItem="Qd2-i4-sFp" firstAttribute="centerY" secondItem="rRV-wf-tdQ" secondAttribute="centerY" id="AXC-iI-Lzn"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="PBn-wq-Cgn" secondAttribute="trailing" constant="20" symbolic="YES" id="BuX-3z-ZFh"/>
                 <constraint firstItem="Qd2-i4-sFp" firstAttribute="top" secondItem="gg3-aF-JJu" secondAttribute="top" constant="20" symbolic="YES" id="Gug-TT-5MS"/>
-                <constraint firstItem="PBn-wq-Cgn" firstAttribute="leading" secondItem="Qd2-i4-sFp" secondAttribute="trailing" constant="8" symbolic="YES" id="LpK-Vi-nzA"/>
+                <constraint firstItem="PBn-wq-Cgn" firstAttribute="leading" secondItem="Qd2-i4-sFp" secondAttribute="trailing" constant="18" id="LpK-Vi-nzA"/>
                 <constraint firstItem="ofH-Xp-0Zg" firstAttribute="leading" secondItem="bah-D8-xm4" secondAttribute="trailing" constant="12" symbolic="YES" id="LpV-dz-dqj"/>
                 <constraint firstItem="bah-D8-xm4" firstAttribute="top" secondItem="Qd2-i4-sFp" secondAttribute="bottom" constant="30" id="WX0-uX-YE5"/>
                 <constraint firstAttribute="trailing" secondItem="ofH-Xp-0Zg" secondAttribute="trailing" constant="20" symbolic="YES" id="gbV-Z3-S1U"/>
                 <constraint firstAttribute="bottom" secondItem="ofH-Xp-0Zg" secondAttribute="bottom" constant="20" symbolic="YES" id="hb3-rx-3ud"/>
-                <constraint firstItem="rRV-wf-tdQ" firstAttribute="leading" secondItem="Qd2-i4-sFp" secondAttribute="trailing" constant="8" symbolic="YES" id="ryM-Ki-0Xc"/>
+                <constraint firstItem="rRV-wf-tdQ" firstAttribute="leading" secondItem="Qd2-i4-sFp" secondAttribute="trailing" constant="18" id="ryM-Ki-0Xc"/>
                 <constraint firstItem="Qd2-i4-sFp" firstAttribute="leading" secondItem="gg3-aF-JJu" secondAttribute="leading" constant="20" symbolic="YES" id="ssI-JN-PEI"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="rRV-wf-tdQ" secondAttribute="trailing" constant="20" symbolic="YES" id="tW3-4q-S56"/>
                 <constraint firstItem="ofH-Xp-0Zg" firstAttribute="centerY" secondItem="bah-D8-xm4" secondAttribute="centerY" id="uj2-DC-TFb"/>
