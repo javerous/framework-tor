@@ -421,7 +421,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 					handler([SMInfo infoOfKind:SMInfoError domain:SMTorInfoUpdateDomain code:SMTorErrorUpdateArchiveInfo info:info]);
 					ctrl(SMOperationsControlFinish);
 				}
-				if (info.kind == SMInfoInfo)
+				else if (info.kind == SMInfoInfo)
 				{
 					if (info.code == SMTorEventOperationInfo)
 					{
@@ -612,7 +612,6 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 				{
 					handler([SMInfo infoOfKind:SMInfoError domain:SMTorInfoUpdateDomain code:SMTorErrorUpdateRelaunch info:info]);
 					ctrl(SMOperationsControlFinish);
-					return;
 				}
 			}];
 			
