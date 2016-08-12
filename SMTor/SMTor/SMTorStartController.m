@@ -75,12 +75,15 @@ NS_ASSUME_NONNULL_BEGIN
 	IBOutlet NSTextField			*summaryField;
 	IBOutlet NSProgressIndicator	*progressIndicator;
 	
+	SMTorStartWindowController *_selfRetain;
+	
 	SMTorManager *_torManager;
 	
 	void (^_handler)(SMInfo *info);
 	
 	BOOL	_isBootstrapping;
-	BOOL	_isError;
+	
+	SMInfo	*_error;
 }
 
 
@@ -97,9 +100,12 @@ NS_ASSUME_NONNULL_BEGIN
 	{
 		if (!torManager || !handler)
 			return nil;
-		
+
 		_torManager = torManager;
 		_handler = handler;
+		
+		// Self retain.
+		_selfRetain = self;
 	}
 	
 	return self;
@@ -125,15 +131,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 			if ([info.domain isEqualToString:SMTorInfoStartDomain] == NO)
 				return;
-			
-			// Forward info.
-			_handler(info);
-
-			// Handle info.
+		
+			// Dispatch info.
 			switch (info.kind)
 			{
 				case SMInfoInfo:
 				{
+					// > Forward info.
+					_handler(info);
+
+					// > Handle code.
 					switch ((SMTorEventStart)info.code)
 					{
 						case SMTorEventStartBootstrapping:
@@ -167,6 +174,7 @@ NS_ASSUME_NONNULL_BEGIN
 						case SMTorEventStartDone:
 						{
 							[self close];
+							_selfRetain = nil;
 							break;
 						}
 							
@@ -179,13 +187,21 @@ NS_ASSUME_NONNULL_BEGIN
 					
 				case SMInfoWarning:
 				{
+					// > Forward info.
+					_handler(info);
+					
+					// > Handle code.
 					switch ((SMTorWarningStart)info.code)
 					{
 						case SMTorWarningStartCanceled:
 						{
 							[self close];
+							_selfRetain = nil;
 							break;
 						}
+							
+						case SMTorWarningStartCorruptedRetry:
+							break;
 					}
 					
 					break;
@@ -197,9 +213,9 @@ NS_ASSUME_NONNULL_BEGIN
 					summaryField.stringValue = [info renderMessage];
 					summaryField.hidden = NO;
 					
-					cancelButton.stringValue = SMLocalizedString(@"tor_button_close", @"");
+					cancelButton.title = SMLocalizedString(@"tor_button_close", @"");
 					
-					_isError = YES;
+					_error = info;
 					
 					break;
 				}
@@ -217,8 +233,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (IBAction)doCancel:(id)sender
 {
-	if (_isError)
+	if (_error)
 	{
+		_handler(_error);
 		[self close];
 	}
 	else
@@ -237,6 +254,9 @@ NS_ASSUME_NONNULL_BEGIN
 			});
 		}];
 	}
+	
+	// Clean self retain.
+	_selfRetain = nil;
 }
 
 @end

@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 */
 #pragma mark - Prototypes
 
-static NSData *file_sha1(NSURL *fileURL);
+static NSData *file_sha256(NSURL *fileURL);
 
 
 
@@ -198,7 +198,7 @@ static NSData *file_sha1(NSURL *fileURL);
 		NSString		*filePath = [binariesPath stringByAppendingPathComponent:file];
 		NSDictionary	*fileInfo = files[file];
 		NSData			*infoHash = fileInfo[SMTorKeyInfoHash];
-		NSData			*diskHash = file_sha1([NSURL fileURLWithPath:filePath]);
+		NSData			*diskHash = file_sha256([NSURL fileURLWithPath:filePath]);
 		
 		if (!diskHash || [infoHash isEqualToData:diskHash] == NO)
 		{
@@ -224,46 +224,43 @@ NS_ASSUME_NONNULL_END
 */
 #pragma mark - C Tools
 
-static NSData *file_sha1(NSURL *fileURL)
+static NSData *file_sha256(NSURL *fileURL)
 {
 	assert(fileURL);
 	
-	// Declarations.
-	NSData			*result = nil;
-	CFReadStreamRef	readStream = NULL;
-	SecTransformRef digestTransform = NULL;
+	// Open file.
+	NSFileHandle *fileHandle = [NSFileHandle fileHandleForReadingFromURL:fileURL error:nil];
 	
-	// Create read stream.
-	readStream = CFReadStreamCreateWithFile(kCFAllocatorDefault, (__bridge CFURLRef)fileURL);
+	if (!fileHandle)
+		return nil;
 	
-	if (!readStream)
-		goto end;
+	// Create SHA256 digester.
+	CC_SHA256_CTX context;
 	
-	if (CFReadStreamOpen(readStream) != true)
-		goto end;
+	CC_SHA256_Init(&context);
 	
-	// Create digest transform.
-	digestTransform = SecDigestTransformCreate(kSecDigestSHA1, 0, NULL);
-	
-	if (digestTransform == NULL)
-		goto end;
-	
-	// Set digest input.
-	SecTransformSetAttribute(digestTransform, kSecTransformInputAttributeName, readStream, NULL);
-	
-	// Execute.
-	result = (__bridge_transfer NSData *)SecTransformExecute(digestTransform, NULL);
-	
-end:
-	
-	if (digestTransform)
-		CFRelease(digestTransform);
-	
-	if (readStream)
+	// Read chunk.
+	while (1)
 	{
-		CFReadStreamClose(readStream);
-		CFRelease(readStream);
+		NSData *chunk;
+		
+		@try {
+			chunk = [fileHandle readDataOfLength:4096];
+		} @catch (NSException *exception) {
+			return nil;
+		}
+		
+		if (chunk.length == 0)
+			break;
+		
+		CC_SHA256_Update(&context, chunk.bytes, (CC_LONG)chunk.length);
 	}
 	
-	return result;
+	// Finalize.
+	uint8_t digest[CC_SHA256_DIGEST_LENGTH];
+	
+	CC_SHA256_Final(digest, &context);
+	
+	// Return.
+	return [NSData dataWithBytes:digest length:sizeof(digest)];
 }

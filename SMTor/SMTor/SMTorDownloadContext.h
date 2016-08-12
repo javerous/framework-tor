@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)handleData:(NSData *)data;
 - (void)handleComplete:(NSError *)error;
 
-- (NSData *)sha1;
+- (NSData *)sha256;
 
 - (void)close;
 

@@ -8,7 +8,7 @@
 
 
 // -- Tor --
-"tor_button_close" = "Fermer";
+"tor_button_close" = "Close";
 
 
 // -- Update --
@@ -42,6 +42,7 @@
 "tor_start_info_done" = "Tor is ready.";
 
 "tor_start_warning_canceled" = "Tor start was canceled.";
+"tor_start_warning_corrupted_retry" = "Your tor binary can't be verified. It was deleted.";
 
 "tor_start_err_already_running" = "Tor is already running.";
 "tor_start_err_configuration" = "Can't obtain some informations from configuration.";

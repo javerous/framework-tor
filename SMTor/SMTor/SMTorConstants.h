@@ -40,17 +40,17 @@
 // Info.plist > keys.
 #define SMTorKeyInfoFiles		@"files"
 #define SMTorKeyInfoTorVersion	@"tor_version"
-#define SMTorKeyInfoHash		@"hash"
+#define SMTorKeyInfoHash		@"sha256"
 
 
 // Remote archive.
 // > URLs.
-#define SMTorBaseUpdateURL			@"http://www.sourcemac.com/tor/%@"
-#define SMTorInfoUpdateURL			@"http://www.sourcemac.com/tor/info.plist"
-#define SMTorInfoSignatureUpdateURL	@"http://www.sourcemac.com/tor/info.plist.sig"
+#define SMTorBaseUpdateURL			@"https://www.sourcemac.com/tor/%@"
+#define SMTorInfoUpdateURL			@"https://www.sourcemac.com/tor/info.plist"
+#define SMTorInfoSignatureUpdateURL	@"https://www.sourcemac.com/tor/info.plist.sig"
 
 // > info.plist > keys.
 #define SMTorKeyArchiveSize		@"size"
 #define SMTorKeyArchiveName		@"name"
 #define SMTorKeyArchiveVersion	@"version"
-#define SMTorKeyArchiveHash		@"hash"
+#define SMTorKeyArchiveHash		@"sha256"

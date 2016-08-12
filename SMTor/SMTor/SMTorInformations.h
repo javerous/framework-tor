@@ -61,6 +61,7 @@ typedef enum
 typedef enum
 {
 	SMTorWarningStartCanceled,
+	SMTorWarningStartCorruptedRetry,
 } SMTorWarningStart;
 
 typedef enum

@@ -36,9 +36,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation SMTorDownloadContext
 {
-	FILE		*_file;
-	NSUInteger	_bytesDownloaded;
-	CC_SHA1_CTX	_sha1;
+	FILE			*_file;
+	NSUInteger		_bytesDownloaded;
+	CC_SHA256_CTX	_sha256;
 }
 
 - (nullable instancetype)initWithPath:(NSString *)path
@@ -58,8 +58,8 @@ NS_ASSUME_NONNULL_BEGIN
 		if (!_file)
 			return nil;
 		
-		// Init sha1.
-		CC_SHA1_Init(&_sha1);
+		// Init sha256.
+		CC_SHA256_Init(&_sha256);
 	}
 	
 	return self;
@@ -80,7 +80,7 @@ NS_ASSUME_NONNULL_BEGIN
 	{
 		if (fwrite([data bytes], [data length], 1, _file) == 1)
 		{
-			CC_SHA1_Update(&_sha1, [data bytes], (CC_LONG)[data length]);
+			CC_SHA256_Update(&_sha256, [data bytes], (CC_LONG)[data length]);
 		}
 	}
 	
@@ -100,11 +100,11 @@ NS_ASSUME_NONNULL_BEGIN
 		_updateHandler(self, _bytesDownloaded, YES, error);
 }
 
-- (NSData *)sha1
+- (NSData *)sha256
 {
-	NSMutableData *result = [[NSMutableData alloc] initWithLength:CC_SHA1_DIGEST_LENGTH];
+	NSMutableData *result = [[NSMutableData alloc] initWithLength:CC_SHA256_DIGEST_LENGTH];
 	
-	CC_SHA1_Final([result mutableBytes], &_sha1);
+	CC_SHA256_Final([result mutableBytes], &_sha256);
 	
 	return result;
 }

@@ -8,7 +8,7 @@
 
 
 // -- Tor --
-"tor_button_close" = "Close";
+"tor_button_close" = "Fermer";
 
 
 // -- Update --
@@ -42,6 +42,7 @@
 "tor_start_info_done" = "Tor est prêt.";
 
 "tor_start_warning_canceled" = "Le démarrage de Tor a été annulé.";
+"tor_start_warning_corrupted_retry" = "Votre binaire tor ne peut être vérifié. Il a été supprimé.";
 
 "tor_start_err_already_running" = "Tor est déjà en cours d'exécution.";
 "tor_start_err_configuration" = "Impossible d'obtenir certaines informations de la configuration.";
