@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface SMTorManager : NSObject
 
 // -- Instance --
-- (id)initWithConfiguration:(SMTorConfiguration *)configuration;
+- (nullable instancetype)initWithConfiguration:(SMTorConfiguration *)configuration;
 
 // -- Life --
 - (void)startWithInfoHandler:(nullable void (^)(SMInfo *info))handler;

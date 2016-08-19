@@ -52,12 +52,20 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)startWithTorManager:(SMTorManager *)torManager infoHandler:(void (^)(SMInfo *info))handler
 {
-	dispatch_async(dispatch_get_main_queue(), ^{
-		
+	CFRunLoopRef runLoop = CFRunLoopGetMain();
+
+	CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^{
+
 		SMTorStartWindowController *ctrl = [[SMTorStartWindowController alloc] initWithTorManager:torManager infoHandler:handler];
+
+		ctrl.window.preventsApplicationTerminationWhenModal = YES;
+		ctrl.window.animationBehavior = NSWindowAnimationBehaviorDocumentWindow;
 		
-		[ctrl showWindow:nil];
+		[[NSApplication sharedApplication] runModalForWindow:ctrl.window];
+
 	});
+	
+	CFRunLoopWakeUp(runLoop);
 }
 
 @end
@@ -122,7 +130,6 @@ NS_ASSUME_NONNULL_BEGIN
 {
 	[super windowDidLoad];
 	
-	[self.window center];
 	[progressIndicator startAnimation:nil];
 	
 	[_torManager startWithInfoHandler:^(SMInfo *info) {
@@ -173,8 +180,7 @@ NS_ASSUME_NONNULL_BEGIN
 							
 						case SMTorEventStartDone:
 						{
-							[self close];
-							_selfRetain = nil;
+							[self _closeWindow];
 							break;
 						}
 							
@@ -195,8 +201,7 @@ NS_ASSUME_NONNULL_BEGIN
 					{
 						case SMTorWarningStartCanceled:
 						{
-							[self close];
-							_selfRetain = nil;
+							[self _closeWindow];
 							break;
 						}
 							
@@ -236,7 +241,7 @@ NS_ASSUME_NONNULL_BEGIN
 	if (_error)
 	{
 		_handler(_error);
-		[self close];
+		[self _closeWindow];
 	}
 	else
 	{
@@ -250,12 +255,26 @@ NS_ASSUME_NONNULL_BEGIN
 		
 		[_torManager stopWithCompletionHandler:^{
 			dispatch_async(dispatch_get_main_queue(), ^{
-				[self close];
+				[self _closeWindow];
 			});
 		}];
 	}
+}
+
+
+
+/*
+** SMTorStartWindowController - Helpers
+*/
+#pragma mark - SMTorStartWindowController - Helpers
+
+- (void)_closeWindow
+{
+	// > main queue <
 	
-	// Clean self retain.
+	[self close];
+	[[NSApplication sharedApplication] stopModal];
+	
 	_selfRetain = nil;
 }
 
