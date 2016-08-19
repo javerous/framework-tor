@@ -89,7 +89,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 	[self registerInfoDescriptors];
 }
 
-- (id)initWithConfiguration:(SMTorConfiguration *)configuration
+- (nullable instancetype)initWithConfiguration:(SMTorConfiguration *)configuration
 {
 	NSAssert(configuration, @"configuration is nil");
 
