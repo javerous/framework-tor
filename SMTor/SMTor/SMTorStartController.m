@@ -62,7 +62,6 @@ NS_ASSUME_NONNULL_BEGIN
 		ctrl.window.animationBehavior = NSWindowAnimationBehaviorDocumentWindow;
 		
 		[[NSApplication sharedApplication] runModalForWindow:ctrl.window];
-
 	});
 	
 	CFRunLoopWakeUp(runLoop);
