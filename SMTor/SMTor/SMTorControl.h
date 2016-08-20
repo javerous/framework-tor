@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)sendAddOnionCommandWithPrivateKey:(nullable NSString *)privateKey port:(NSString *)servicePort resultHandler:(void (^)(BOOL success, NSString * _Nullable serviceID, NSString * _Nullable privateKey))handler;
 
 // -- Helpers --
-+ (NSDictionary *)parseNoticeBootstrap:(NSString *)line;
++ (nullable NSDictionary *)parseNoticeBootstrap:(NSString *)line;
 
 @end
 

@@ -113,10 +113,14 @@ typedef void (^SMTorControlLineHandler)(NSNumber *code, NSString * _Nullable lin
 		// Finish handler.
 		BOOL finished = NO;
 		
+		if (_currentLineHandler)
+			_currentLineHandler(@(551), nil, &finished);
+		
 		for (SMTorControlLineHandler handler in _lineHandlers)
 			handler(@(551), nil, &finished);
 		
 		[_lineHandlers removeAllObjects];
+		_currentLineHandler = nil;
 	});
 }
 
@@ -267,7 +271,7 @@ typedef void (^SMTorControlLineHandler)(NSNumber *code, NSString * _Nullable lin
  */
 #pragma mark - SMTorControl - Helpers
 
-+ (NSDictionary *)parseNoticeBootstrap:(NSString *)line
++ (nullable NSDictionary *)parseNoticeBootstrap:(NSString *)line
 {
 	NSAssert(line, @"line is nil");
 	
@@ -359,6 +363,7 @@ typedef void (^SMTorControlLineHandler)(NSNumber *code, NSString * _Nullable lin
 				// > Notify event.
 				serverEvent(type, finfo);
 			}
+			
 			// Handle common reply.
 			else
 			{
@@ -392,10 +397,14 @@ typedef void (^SMTorControlLineHandler)(NSNumber *code, NSString * _Nullable lin
 		
 		BOOL finished = NO;
 
+		if (_currentLineHandler)
+			_currentLineHandler(@(551), nil, &finished);
+		
 		for (SMTorControlLineHandler handler in _lineHandlers)
 			handler(@(551), nil, &finished);
 		
 		[_lineHandlers removeAllObjects];
+		_currentLineHandler = nil;
 	});
 	
 	// Notify error.
