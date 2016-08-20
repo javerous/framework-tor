@@ -434,7 +434,8 @@ static NSString *hexa_from_data(NSData *data);
 			}
 			
 			// Snippet to handle bootstrap status.
-			__block NSNumber *lastProgress = nil;
+			__block NSNumber	*lastProgress = nil;
+			__block BOOL		done = NO;
 			
 			void (^handleNoticeBootstrap)(NSString * _Nullable) = ^(NSString * _Nullable _content) {
 				
@@ -457,11 +458,13 @@ static NSString *hexa_from_data(NSData *data);
 				}
 				
 				// Done.
-				if ([tag isEqualToString:@"done"])
+				if ([tag isEqualToString:@"done"] && done == NO)
 				{
 					[control stop];
 					control = nil;
 					
+					done = YES;
+
 					ctrl(SMOperationsControlContinue);
 				}
 			};
@@ -544,14 +547,6 @@ static NSString *hexa_from_data(NSData *data);
 					handler([SMInfo infoOfKind:SMInfoWarning domain:SMTorInfoStartDomain code:SMTorWarningStartCanceled]);
 				else
 					handler(errorInfo);
-				
-				// Clean created things.
-				dispatch_async(_localQueue, ^{
-					[_task terminate];
-					_task = nil;
-					
-					_torURLSession = nil;
-				});
 			}
 			else
 			{
@@ -565,7 +560,14 @@ static NSString *hexa_from_data(NSData *data);
 				_currentStartOperation = nil;
 				
 				if (errorInfo || canceled)
+				{
+					[_task terminate];
+					_task = nil;
+					
+					_torURLSession = nil;
+					
 					_isRunning = NO;
+				}
 				
 				opCtrl(SMOperationsControlContinue);
 			});
