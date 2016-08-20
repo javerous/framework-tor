@@ -477,8 +477,11 @@ static NSString *hexa_from_data(NSData *data);
 				
 				if (!success)
 				{
-					errorInfo = [SMInfo infoOfKind:SMInfoError domain:SMTorInfoStartDomain code:SMTorErrorStartControlMonitor];
-					ctrl(SMOperationsControlFinish);
+					if (!errorInfo)
+					{
+						errorInfo = [SMInfo infoOfKind:SMInfoError domain:SMTorInfoStartDomain code:SMTorErrorStartControlMonitor];
+						ctrl(SMOperationsControlFinish);
+					}
 					return;
 				}
 			}];
@@ -488,8 +491,12 @@ static NSString *hexa_from_data(NSData *data);
 				
 				if (!success)
 				{
-					errorInfo = [SMInfo infoOfKind:SMInfoError domain:SMTorInfoStartDomain code:SMTorErrorStartControlMonitor];
-					ctrl(SMOperationsControlFinish);
+					if (!errorInfo)
+					{
+						errorInfo = [SMInfo infoOfKind:SMInfoError domain:SMTorInfoStartDomain code:SMTorErrorStartControlMonitor];
+						ctrl(SMOperationsControlFinish);
+					}
+					
 					return;
 				}
 				
@@ -740,7 +747,7 @@ static NSString *hexa_from_data(NSData *data);
 			
 			NSData *line;
 			
-			[buffer appendBytes:[data bytes] ofSize:[data length] copy:YES];
+			[buffer appendBytes:[data bytes] size:[data length] copy:YES];
 			
 			[buffer dataUpToCStr:"\n" includeSearch:NO];
 			

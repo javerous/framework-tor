@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 */
 #pragma mark - Prototypes
 
-static NSData *file_sha256(NSURL *fileURL);
+static NSData * _Nullable file_sha256(NSURL *fileURL);
 
 
 
@@ -216,15 +216,13 @@ static NSData *file_sha256(NSURL *fileURL);
 @end
 
 
-NS_ASSUME_NONNULL_END
-
 
 /*
 ** C Tools
 */
 #pragma mark - C Tools
 
-static NSData *file_sha256(NSURL *fileURL)
+static NSData * _Nullable file_sha256(NSURL *fileURL)
 {
 	assert(fileURL);
 	
@@ -264,3 +262,5 @@ static NSData *file_sha256(NSURL *fileURL)
 	// Return.
 	return [NSData dataWithBytes:digest length:sizeof(digest)];
 }
+
+NS_ASSUME_NONNULL_END

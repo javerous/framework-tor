@@ -105,8 +105,8 @@ NS_ASSUME_NONNULL_BEGIN
 	
 	if (self)
 	{
-		if (!torManager || !handler)
-			return nil;
+		NSAssert(torManager, @"torManager is nil");
+		NSAssert(handler, @"handler is nil");
 
 		_torManager = torManager;
 		_handler = handler;

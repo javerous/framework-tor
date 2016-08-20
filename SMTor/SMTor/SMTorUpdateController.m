@@ -93,7 +93,7 @@ NS_ASSUME_NONNULL_BEGIN
 */
 #pragma mark - SMTorUpdateWindowController - Instance
 
-- (id)init
+- (instancetype)init
 {
 	self = [super initWithWindowNibName:@"UpdateWindow"];
 	
@@ -127,8 +127,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)handleUpdateWithTorManager:(SMTorManager *)torManager oldVersion:(NSString *)oldVersion newVersion:(NSString *)newVersion infoHandler:(nullable void (^)(SMInfo *info))handler
 {
-	if (!oldVersion || !newVersion || !torManager)
-		return;
+	NSAssert(oldVersion, @"oldVersion is nil");
+	NSAssert(newVersion, @"newVersion is nil");
+	NSAssert(torManager, @"torManager is nil");
 	
 	dispatch_async(dispatch_get_main_queue(), ^{
 		
