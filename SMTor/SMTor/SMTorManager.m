@@ -205,16 +205,18 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 						
 					case SMInfoWarning:
 					{
-						dispatch_async(_localQueue, ^{
-							if (info.code == SMTorWarningStartCanceled)
-							{
-								_torTask = nil;
-								_urlSession = nil;
-							}
-						});
+						if (info.code == SMTorWarningStartCanceled)
+						{
+							dispatch_async(_localQueue, ^{
+								{
+									_torTask = nil;
+									_urlSession = nil;
+								}
+							});
+							
+							ctrl(SMOperationsControlContinue);
+						}
 						
-						ctrl(SMOperationsControlContinue);
-
 						break;
 					}
 						
@@ -226,6 +228,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 						});
 						
 						ctrl(SMOperationsControlContinue);
+						
 						break;
 					}
 				}
