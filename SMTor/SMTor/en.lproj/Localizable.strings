@@ -60,7 +60,7 @@
 "tor_checkupdate_error_not_running" = "Tor is not running.";
 "tor_checkupdate_error_check_remote_info" = "Can't retrieve remote informations.";
 "tor_checkupdate_error_validate_local_signature" = "Can't validate local signature.";
-"tor_checkupdate_error_nothing_new" = "There is no update available (already up-to-date).";
+"tor_checkupdate_error_nothing_new" = "There is no update of tor available (already up-to-date).";
 
 // SMTorInfoUpdateDomain
 "tor_update_info_retrieve_info" = "Retrieve remote tor informations.";

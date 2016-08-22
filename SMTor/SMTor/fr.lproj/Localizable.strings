@@ -38,7 +38,7 @@
 "tor_start_info_bootstrap" = "Tor est en cours d'amorçage %lu%% (%@).";
 "tor_start_info_service_id" = "Tor a démarré avec le nom d'hôte '%@'.";
 "tor_start_info_service_private_key" = "Tor a généré une nouvelle identité.";
-"tor_start_info_url_session" = "Le proxy tor proxy prêt.";
+"tor_start_info_url_session" = "Le proxy tor est prêt.";
 "tor_start_info_done" = "Tor est prêt.";
 
 "tor_start_warning_canceled" = "Le démarrage de Tor a été annulé.";
@@ -60,7 +60,7 @@
 "tor_checkupdate_error_not_running" = "Tor n'est pas en cours d'exécution.";
 "tor_checkupdate_error_check_remote_info" = "Impossible de télécharger les informations.";
 "tor_checkupdate_error_validate_local_signature" = "Impossible de valider la signature locale.";
-"tor_checkupdate_error_nothing_new" = "Il n'y a pas de mise à jour disponible (déjà à jour).";
+"tor_checkupdate_error_nothing_new" = "Il n'y a pas de mise à jour de tor disponible (déjà à jour).";
 
 // SMTorInfoUpdateDomain
 "tor_update_info_retrieve_info" = "Télécharge les informations de tor.";
