@@ -42,61 +42,55 @@
 */
 #pragma mark - Types
 
-typedef enum
-{
+typedef NS_ENUM(unsigned int, SMTorLogKind) {
 	SMTorLogStandard,
 	SMTorLogError
-} SMTorLogKind;
+};
 
 // == SMTorStart ==
-typedef enum
-{
+typedef NS_ENUM(unsigned int, SMTorEventStart) {
 	SMTorEventStartBootstrapping,		// context: @{ @"progress" : NSNumber, @"summary" : NSString }
 	SMTorEventStartServiceID,			// context: NSString
 	SMTorEventStartServicePrivateKey,	// context: NSString
 	SMTorEventStartURLSession,			// context: NSURLSession
 	SMTorEventStartDone,
-} SMTorEventStart;
+};
 
-typedef enum
-{
+typedef NS_ENUM(unsigned int, SMTorWarningStart) {
 	SMTorWarningStartCanceled,
 	SMTorWarningStartCorruptedRetry,
-} SMTorWarningStart;
+};
 
-typedef enum
-{
+typedef NS_ENUM(unsigned int, SMTorErrorStart) {
 	SMTorErrorStartAlreadyRunning,
 	SMTorErrorStartConfiguration,
 	SMTorErrorStartUnarchive,
 	SMTorErrorStartSignature,
 	SMTorErrorStartLaunch,
+	SMTorErrorStartControlFile,
 	SMTorErrorStartControlConnect,
 	SMTorErrorStartControlAuthenticate,
 	SMTorErrorStartControlHiddenService,
 	SMTorErrorStartControlMonitor,
-} SMTorErrorStart;
+};
 
 
 // == SMTorInfoCheckUpdateEvent ==
-typedef enum
-{
+typedef NS_ENUM(unsigned int, SMTorEventCheckUpdate) {
 	SMTorEventCheckUpdateAvailable,		// context: @{ @"old_version" : NSString, @"new_version" : NSString }
-} SMTorEventCheckUpdate;
+};
 
-typedef enum
-{
+typedef NS_ENUM(unsigned int, SMTorErrorCheckUpdate) {
 	SMTorErrorCheckUpdateTorNotRunning,
 	SMTorErrorRetrieveRemoteInfo,		// info: SMInfo (<operation error>)
 	SMTorErrorCheckUpdateLocalSignature,// info: SMInfo (<operation error>)
 	
 	SMTorErrorCheckUpdateNothingNew,
-} SMTorErrorCheckUpdate;
+};
 
 
 // == SMTorUpdate ==
-typedef enum
-{
+typedef NS_ENUM(unsigned int, SMTorEventUpdate) {
 	SMTorEventUpdateArchiveInfoRetrieving,
 	SMTorEventUpdateArchiveSize,			// context: NSNumber (<archive size>)
 	SMTorEventUpdateArchiveDownloading,		// context: NSNumber (<archive bytes downloaded>)
@@ -104,10 +98,9 @@ typedef enum
 	SMTorEventUpdateSignatureCheck,
 	SMTorEventUpdateRelaunch,
 	SMTorEventUpdateDone,
-} SMTorEventUpdate;
+};
 
-typedef enum
-{
+typedef NS_ENUM(unsigned int, SMTorErrorUpdate) {
 	SMTorErrorUpdateTorNotRunning,
 	SMTorErrorUpdateConfiguration,
 	SMTorErrorUpdateInternal,
@@ -115,18 +108,16 @@ typedef enum
 	SMTorErrorUpdateArchiveDownload,	// context: NSError
 	SMTorErrorUpdateArchiveStage,		// info: SMInfo (<operation error>)
 	SMTorErrorUpdateRelaunch,			// info: SMInfo (<operation error>)
-} SMTorErrorUpdate;
+};
 
 
 // == SMTorOperation ==
-typedef enum
-{
+typedef NS_ENUM(unsigned int, SMTorEventOperation) {
 	SMTorEventOperationInfo,			// context: NSDictionary
 	SMTorEventOperationDone,
-} SMTorEventOperation;
+};
 
-typedef enum
-{
+typedef NS_ENUM(unsigned int, SMTorErrorOperation) {
 	SMTorErrorOperationConfiguration,
 	SMTorErrorOperationIO,
 	SMTorErrorOperationNetwork,		// context
@@ -135,4 +126,4 @@ typedef enum
 	SMTorErrorOperationTor,			// context: NSNumber (<tor result>)
 	
 	SMTorErrorInternal
-} SMTorErrorOperation;
+};

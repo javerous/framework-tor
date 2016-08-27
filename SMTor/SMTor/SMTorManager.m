@@ -477,7 +477,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 			context.updateHandler = ^(SMTorDownloadContext *aContext, NSUInteger bytesDownloaded, BOOL complete, NSError *error) {
 				
 				// > Handle complete.
-				if (complete || bytesDownloaded > [remoteSize unsignedIntegerValue])
+				if (complete || bytesDownloaded > remoteSize.unsignedIntegerValue)
 				{
 					if (complete)
 					{
@@ -932,7 +932,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 			// Check content.
 			NSData *publicKey = [[NSData alloc] initWithBytesNoCopy:(void *)kPublicKey length:sizeof(kPublicKey) freeWhenDone:NO];
 			
-			if ([SMDataSignature validateSignature:data forData:remoteInfoData withPublicKey:publicKey] == NO)
+			if ([SMDataSignature validateSignature:data data:remoteInfoData publicKey:publicKey] == NO)
 			{
 				handler([SMInfo infoOfKind:SMInfoError domain:SMTorInfoOperationDomain code:SMTorErrorOperationSignature context:error]);
 				ctrl(SMOperationsControlFinish);
@@ -1004,7 +1004,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 								NSNumber	*progress = context[@"progress"];
 								NSString	*summary = context[@"summary"];
 									 
-								return [NSString stringWithFormat:SMLocalizedString(@"tor_start_info_bootstrap", @""), [progress unsignedIntegerValue], summary];
+								return [NSString stringWithFormat:SMLocalizedString(@"tor_start_info_bootstrap", @""), progress.unsignedIntegerValue, summary];
 							},
 							SMInfoLocalizableKey : @NO,
 						};
@@ -1121,6 +1121,15 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 						return @{
 							SMInfoNameKey : @"SMTorErrorStartLaunch",
 							SMInfoTextKey : @"tor_start_err_launch",
+							SMInfoLocalizableKey : @YES,
+						};
+					}
+						
+					case SMTorErrorStartControlFile:
+					{
+						return @{
+							SMInfoNameKey : @"SMTorErrorStartControlFile",
+							SMInfoTextKey : @"tor_start_err_control_file",
 							SMInfoLocalizableKey : @YES,
 						};
 					}
@@ -1265,7 +1274,7 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 						return @{
 							SMInfoNameKey : @"SMTorEventUpdateArchiveSize",
 							SMInfoDynTextKey : ^ NSString *(NSNumber *context) {
-								return [NSString stringWithFormat:SMLocalizedString(@"tor_update_info_archive_size", @""), [context unsignedLongLongValue]];
+								return [NSString stringWithFormat:SMLocalizedString(@"tor_update_info_archive_size", @""), context.unsignedLongLongValue];
 							},
 							SMInfoLocalizableKey : @NO,
 						};
@@ -1540,10 +1549,10 @@ static BOOL version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 		NSUInteger baseValue = 0;
 		NSUInteger newValue = 0;
 		
-		if (i < [baseParts count])
+		if (i < baseParts.count)
 			baseValue = (NSUInteger)[baseParts[i] intValue];
 		
-		if (i < [newParts count])
+		if (i < newParts.count)
 			newValue = (NSUInteger)[newParts[i] intValue];
 		
 		if (newValue > baseValue)

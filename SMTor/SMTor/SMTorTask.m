@@ -26,6 +26,7 @@
 #endif
 
 #import <CommonCrypto/CommonCrypto.h>
+#import <objc/runtime.h>
 
 #import "SMTorTask.h"
 
@@ -39,6 +40,15 @@
 
 
 NS_ASSUME_NONNULL_BEGIN
+
+
+/*
+** Globals
+*/
+#pragma mark - Globals
+
+static uint8_t gExpectedTerminationKey = 0;
+
 
 
 /*
@@ -110,16 +120,16 @@ static NSString *hexa_from_data(NSData *data);
 */
 #pragma mark - SMTorTask - Life
 
-- (void)startWithConfiguration:(SMTorConfiguration *)configuration logHandler:(nullable void (^)(SMTorLogKind kind, NSString *log))logHandler completionHandler:(void (^)(SMInfo *info))handler
+- (void)startWithConfiguration:(SMTorConfiguration *)configuration logHandler:(nullable void (^)(SMTorLogKind kind, NSString *log, BOOL fatalLog))logHandler completionHandler:(void (^)(SMInfo *info))handler
 {
 	[self startWithConfiguration:configuration tryCounter:0 logHandler:logHandler completionHandler:handler];
 }
 
-- (void)startWithConfiguration:(SMTorConfiguration *)configuration tryCounter:(NSUInteger)tryCounter logHandler:(nullable void (^)(SMTorLogKind kind, NSString *log))logHandler completionHandler:(void (^)(SMInfo *info))handler
+- (void)startWithConfiguration:(SMTorConfiguration *)configuration tryCounter:(NSUInteger)tryCounter logHandler:(nullable void (^)(SMTorLogKind kind, NSString *log, BOOL fatalLog))logHandler completionHandler:(void (^)(SMInfo *info))handler
 {
 	NSAssert(configuration, @"configuration is nil");
 	NSAssert(handler, @"handler is nil");
-	
+	/*
 #if defined(DEBUG) && DEBUG
 	// To speed up debugging, if we are building in debug mode, do not launch a new tor instance if there is already one running.
 	
@@ -163,7 +173,7 @@ static NSString *hexa_from_data(NSData *data);
 		free(pids);
 	}
 #endif
-	
+	*/
 	[_opQueue scheduleBlock:^(SMOperationsControl opCtrl) {
 		
 		SMOperationsQueue	*operations = [[SMOperationsQueue alloc] init];
@@ -304,24 +314,41 @@ static NSString *hexa_from_data(NSData *data);
 			}
 			
 			// Wait for file appearance.
+			__block NSUInteger tryCounter = 0;
+			
 			dispatch_source_t testTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _localQueue);
 			
 			dispatch_source_set_timer(testTimer, DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC, 0);
 			
 			dispatch_source_set_event_handler(testTimer, ^{
 				
+				// Max try.
+				if (tryCounter > 5)
+				{
+					dispatch_source_cancel(testTimer);
+					errorInfo = [SMInfo infoOfKind:SMInfoError domain:SMTorInfoStartDomain code:SMTorErrorStartControlFile];
+					ctrl(SMOperationsControlFinish);
+					return;
+				}
+				
 				// Try to read file.
 				NSString *ctrlInfo = [NSString stringWithContentsOfFile:ctrlInfoPath encoding:NSASCIIStringEncoding error:nil];
 				
 				if (!ctrlInfo)
+				{
+					tryCounter++;
 					return;
+				}
 				
 				// Try to parse content.
 				NSRegularExpression *regExp = [NSRegularExpression regularExpressionWithPattern:@"PORT[^=]*=[^0-9]*([0-9\\.]+):([0-9]+)" options:NSRegularExpressionCaseInsensitive error:nil];
 				NSArray				*results = [regExp matchesInString:ctrlInfo options:0 range:NSMakeRange(0, ctrlInfo.length)];
 				
 				if (results == 0)
+				{
+					tryCounter++;
 					return;
+				}
 				
 				// Remove info file once parsed.
 				[[NSFileManager defaultManager] removeItemAtPath:ctrlInfoPath error:nil];
@@ -330,7 +357,10 @@ static NSString *hexa_from_data(NSData *data);
 				NSTextCheckingResult *result = results[0];
 				
 				if (result.numberOfRanges < 3)
+				{
+					tryCounter++;
 					return;
+				}
 				
 				torCtrlAddress = [ctrlInfo substringWithRange:[result rangeAtIndex:1]];
 				torCtrlPort = [ctrlInfo substringWithRange:[result rangeAtIndex:2]];
@@ -358,7 +388,7 @@ static NSString *hexa_from_data(NSData *data);
 		[operations scheduleCancelableBlock:^(SMOperationsControl ctrl, SMOperationsAddCancelBlock addCancelBlock) {
 			
 			// Connect control.
-			control = [[SMTorControl alloc] initWithIP:torCtrlAddress port:(uint16_t)[torCtrlPort intValue]];
+			control = [[SMTorControl alloc] initWithIP:torCtrlAddress port:(uint16_t)torCtrlPort.intValue];
 			
 			if (!control)
 			{
@@ -451,7 +481,7 @@ static NSString *hexa_from_data(NSData *data);
 				NSString *tag = bootstrap[@"tag"];
 				
 				// Notify prrogress.
-				if ([progress integerValue] > [lastProgress integerValue])
+				if (progress.integerValue > lastProgress.integerValue)
 				{
 					lastProgress = progress;
 					handler([SMInfo infoOfKind:SMInfoInfo domain:SMTorInfoStartDomain code:SMTorEventStartBootstrapping context:@{ @"progress" : progress, @"summary" : summary }]);
@@ -561,6 +591,7 @@ static NSString *hexa_from_data(NSData *data);
 				
 				if (errorInfo || canceled)
 				{
+					objc_setAssociatedObject(_task, &gExpectedTerminationKey, @YES, OBJC_ASSOCIATION_RETAIN);
 					[_task terminate];
 					_task = nil;
 					
@@ -606,6 +637,7 @@ static NSString *hexa_from_data(NSData *data);
 	
 	// Terminate task.
 	@try {
+		objc_setAssociatedObject(_task, &gExpectedTerminationKey, @YES, OBJC_ASSOCIATION_RETAIN);
 		[_task terminate];
 		[_task waitUntilExit];
 	} @catch (NSException *exception) {
@@ -692,7 +724,7 @@ static NSString *hexa_from_data(NSData *data);
 */
 #pragma mark - SMTorTask - Helpers
 
-+ (void)operationLaunchTorWithConfiguration:(SMTorConfiguration *)configuration logHandler:(nullable void (^)(SMTorLogKind kind, NSString *log))logHandler completionHandler:(void (^)(SMInfo *info, NSTask * _Nullable task, NSString * _Nullable ctrlKeyHexa))handler
++ (void)operationLaunchTorWithConfiguration:(SMTorConfiguration *)configuration logHandler:(nullable void (^)(SMTorLogKind kind, NSString *log, BOOL fatalLog))logHandler completionHandler:(void (^)(SMInfo *info, NSTask * _Nullable task, NSString * _Nullable ctrlKeyHexa))handler
 {
 	NSAssert(handler, @"handler is nil");
 	
@@ -733,11 +765,12 @@ static NSString *hexa_from_data(NSData *data);
 	// Log snippet.
 	dispatch_queue_t logQueue = dispatch_queue_create("com.smtor.tor-task.output", DISPATCH_QUEUE_SERIAL);
 	
-	void (^handleLog)(NSFileHandle *, SMBuffer *buffer, SMTorLogKind) = ^(NSFileHandle *handle, SMBuffer *buffer, SMTorLogKind kind) {
+	void (^handleLog)(NSFileHandle *, NSMutableString *buffer, SMTorLogKind) = ^(NSFileHandle *handle, NSMutableString *buffer, SMTorLogKind kind) {
+		
 		NSData *data;
 		
 		@try {
-			data = [handle availableData];
+			data = handle.availableData;
 		}
 		@catch (NSException *exception) {
 			handle.readabilityHandler = nil;
@@ -747,17 +780,24 @@ static NSString *hexa_from_data(NSData *data);
 		// Parse data.
 		dispatch_async(logQueue, ^{
 			
-			NSData *line;
+			NSString *strData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 			
-			[buffer appendBytes:[data bytes] size:[data length] copy:YES];
+			if (strData)
+				[buffer appendString:strData];
 			
-			[buffer dataUpToCStr:"\n" includeSearch:NO];
-			
-			while ((line = [buffer dataUpToCStr:"\n" includeSearch:NO]))
+			while (1)
 			{
-				NSString *string = [[NSString alloc] initWithData:line encoding:NSUTF8StringEncoding];
+				NSRange lineSeparator = [buffer rangeOfCharacterFromSet:[NSCharacterSet newlineCharacterSet]];
 				
-				logHandler(kind, string);
+				if (lineSeparator.location == NSNotFound)
+					break;
+				
+				NSString *line = [buffer substringToIndex:lineSeparator.location];
+				
+				if (line.length > 0)
+					logHandler(kind, line, NO);
+				
+				[buffer deleteCharactersInRange:NSMakeRange(0, lineSeparator.location + lineSeparator.length)];
 			}
 		});
 	};
@@ -770,23 +810,23 @@ static NSString *hexa_from_data(NSData *data);
 	{
 		NSPipe		*errPipe = [[NSPipe alloc] init];
 		NSPipe		*outPipe = [[NSPipe alloc] init];
-		SMBuffer	*errBuffer = [[SMBuffer alloc] init];
-		SMBuffer	*outBuffer =  [[SMBuffer alloc] init];
+		NSMutableString	*errBuffer = [[NSMutableString alloc] init];
+		NSMutableString	*outBuffer = [[NSMutableString alloc] init];
 		
-		NSFileHandle *errHandle = [errPipe fileHandleForReading];
-		NSFileHandle *outHandle = [outPipe fileHandleForReading];
+		NSFileHandle *errHandle = errPipe.fileHandleForReading;
+		NSFileHandle *outHandle = outPipe.fileHandleForReading;
 		
 		errHandle.readabilityHandler = ^(NSFileHandle *handle) { handleLog(handle, errBuffer, SMTorLogError); };
 		outHandle.readabilityHandler = ^(NSFileHandle *handle) { handleLog(handle, outBuffer, SMTorLogStandard); };
 		
-		[task setStandardError:errPipe];
-		[task setStandardOutput:outPipe];
+		task.standardError = errPipe;
+		task.standardOutput = outPipe;
 	}
 	
 	// > Set launch path.
 	NSString *torExecPath = [[binaryPath stringByAppendingPathComponent:SMTorFileBinBinaries] stringByAppendingPathComponent:SMTorFileBinTor];
 	
-	[task setLaunchPath:torExecPath];
+	task.launchPath = torExecPath;
 	
 	// > Set arguments.
 	NSMutableArray *args = [NSMutableArray array];
@@ -796,7 +836,7 @@ static NSString *hexa_from_data(NSData *data);
 	
 	
 	[args addObject:@"--SocksPort"];
-	[args addObject:[@(configuration.socksPort) stringValue]];
+	[args addObject:(@(configuration.socksPort)).stringValue];
 	
 	[args addObject:@"--SocksListenAddress"];
 	[args addObject:(configuration.socksHost ?: @"localhost")];
@@ -813,7 +853,15 @@ static NSString *hexa_from_data(NSData *data);
 	[args addObject:@"--HashedControlPassword"];
 	[args addObject:hashedPassword];
 	
-	[task setArguments:args];
+	task.arguments = args;
+	
+	task.terminationHandler = ^(NSTask *atask) {
+		
+		NSNumber *expectedTermination = objc_getAssociatedObject(atask, &gExpectedTerminationKey);
+		
+		if (expectedTermination.boolValue == NO)
+			logHandler(SMTorLogError, [NSString stringWithFormat:SMLocalizedString(@"log_tor_unexpected_termination", @""), atask.terminationStatus], YES);
+	};
 	
 	
 	// Run tor task.

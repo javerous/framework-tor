@@ -11,6 +11,10 @@
 "tor_button_close" = "Fermer";
 
 
+// -- Logs --
+"log_tor_unexpected_termination" = "le binaire tor s'est terminé inopinément (retour %d).";
+
+
 // -- Update --
 "update_subtitle_available" = "Tor %@ est disponible — vous utilisez la version %@. Voulez-vous la télécharger ?";
 "update_button_cancel" = "Annuler";
@@ -49,6 +53,7 @@
 "tor_start_err_unarchive" = "Impossible de désarchiver tor.";
 "tor_start_err_signature" = "Impossible de valider la signature.";
 "tor_start_err_launch" = "Le système ne peut pas exécuter le binaire tor.";
+"tor_start_err_control_file" = "Impossible de trouver le fichier de contrôle de tor.";
 "tor_start_err_control_connect" = "Impossible de se connecter au port de contrôle de tor.";
 "tor_start_err_control_authenticate" = "Impossible de s'authentifier pour le contrôle de tor.";
 "tor_start_err_control_hiddenservice" = "Impossible d'enregister le service caché.";

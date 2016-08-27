@@ -35,13 +35,15 @@ NS_ASSUME_NONNULL_BEGIN
 @interface SMTorDownloadContext : NSObject
 
 // -- Instance --
-- (nullable instancetype)initWithPath:(NSString *)path;
+- (nullable instancetype)initWithPath:(NSString *)path NS_DESIGNATED_INITIALIZER;
+
+- (instancetype)init NS_UNAVAILABLE;
 
 // -- Methods --
 - (void)handleData:(NSData *)data;
 - (void)handleComplete:(NSError *)error;
 
-- (NSData *)sha256;
+@property (nonatomic, readonly, copy) NSData *sha256;
 
 - (void)close;
 

@@ -46,7 +46,9 @@ NS_ASSUME_NONNULL_BEGIN
 @interface SMTorManager : NSObject
 
 // -- Instance --
-- (nullable instancetype)initWithConfiguration:(SMTorConfiguration *)configuration;
+- (nullable instancetype)initWithConfiguration:(SMTorConfiguration *)configuration NS_DESIGNATED_INITIALIZER;
+
+- (instancetype)init NS_UNAVAILABLE;
 
 // -- Life --
 - (void)startWithInfoHandler:(nullable void (^)(SMInfo *info))handler;
@@ -57,11 +59,12 @@ NS_ASSUME_NONNULL_BEGIN
 - (dispatch_block_t)updateWithInfoHandler:(void (^)(SMInfo *info))handler;
 
 // -- Configuration --
+@property (atomic, readonly, copy) SMTorConfiguration *configuration;
+
 - (BOOL)loadConfiguration:(SMTorConfiguration *)configuration infoHandler:(nullable void (^)(SMInfo *info))hander;
-- (SMTorConfiguration *)configuration;
 
 // -- Events --
-@property (strong, atomic, nullable) void (^logHandler)(SMTorLogKind kind, NSString *log);
+@property (strong, atomic, nullable) void (^logHandler)(SMTorLogKind kind, NSString *log, BOOL fatalLog);
 
 @end
 

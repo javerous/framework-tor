@@ -68,7 +68,7 @@ static NSData * _Nullable file_sha256(NSURL *fileURL);
 	
 	// Get target directory.
 	if ([torBinPath hasSuffix:@"/"])
-		torBinPath = [torBinPath substringToIndex:([torBinPath length] - 1)];
+		torBinPath = [torBinPath substringToIndex:(torBinPath.length - 1)];
 	
 	if (!torBinPath)
 	{
@@ -84,7 +84,7 @@ static NSData * _Nullable file_sha256(NSURL *fileURL);
 	}
 	
 	// Copy tarball.
-	NSString *filePath = [fileURL path];
+	NSString *filePath = fileURL.path;
 	NSString *newFilePath = [torBinPath stringByAppendingPathComponent:@"_temp.tgz"];
 	
 	[fileManager removeItemAtPath:newFilePath error:nil];
@@ -114,18 +114,18 @@ static NSData * _Nullable file_sha256(NSURL *fileURL);
 	// Create & launch task.
 	NSTask *task = [[NSTask alloc] init];
 	
-	[task setLaunchPath:@"/usr/bin/sandbox-exec"];
-	[task setCurrentDirectoryPath:torBinPath];
+	task.launchPath = @"/usr/bin/sandbox-exec";
+	task.currentDirectoryPath = torBinPath;
 	
-	[task setArguments:@[ @"-p", profile, @"/usr/bin/tar", @"-x", @"-z", @"-f", [newFilePath lastPathComponent], @"--strip-components", @"1" ]];
+	task.arguments = @[ @"-p", profile, @"/usr/bin/tar", @"-x", @"-z", @"-f", newFilePath.lastPathComponent, @"--strip-components", @"1" ];
 	
 	[task setStandardError:nil];
 	[task setStandardOutput:nil];
 	
 	task.terminationHandler = ^(NSTask *aTask) {
 		
-		if ([aTask terminationStatus] != 0)
-			handler([SMInfo infoOfKind:SMInfoError domain:SMTorInfoOperationDomain code:SMTorErrorOperationExtract context:@([aTask terminationStatus])]);
+		if (aTask.terminationStatus != 0)
+			handler([SMInfo infoOfKind:SMInfoError domain:SMTorInfoOperationDomain code:SMTorErrorOperationExtract context:@(aTask.terminationStatus)]);
 		else
 			handler([SMInfo infoOfKind:SMInfoInfo domain:SMTorInfoOperationDomain code:SMTorEventOperationDone]);
 		
@@ -171,7 +171,7 @@ static NSData * _Nullable file_sha256(NSURL *fileURL);
 	// Check signature.
 	NSData *publicKey = [[NSData alloc] initWithBytesNoCopy:(void *)kPublicKey length:sizeof(kPublicKey) freeWhenDone:NO];
 	
-	if ([SMFileSignature validateSignature:data forContentsOfURL:[NSURL fileURLWithPath:infoPath] withPublicKey:publicKey] == NO)
+	if ([SMFileSignature validateSignature:data fileURL:[NSURL fileURLWithPath:infoPath] publicKey:publicKey] == NO)
 	{
 		handler([SMInfo infoOfKind:SMInfoError domain:SMTorInfoOperationDomain code:SMTorErrorOperationSignature context:infoPath]);
 		return;
@@ -210,8 +210,6 @@ static NSData * _Nullable file_sha256(NSURL *fileURL);
 	// Finish.
 	handler([SMInfo infoOfKind:SMInfoInfo domain:SMTorInfoOperationDomain code:SMTorEventOperationDone]);
 }
-
-
 
 @end
 

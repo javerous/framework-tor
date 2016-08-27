@@ -50,10 +50,10 @@ NS_ASSUME_NONNULL_BEGIN
 		NSAssert(path, @"path is nil");
 		
 		// Create directory.
-		[[NSFileManager defaultManager] createDirectoryAtPath:[path stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
+		[[NSFileManager defaultManager] createDirectoryAtPath:path.stringByDeletingLastPathComponent withIntermediateDirectories:YES attributes:nil error:nil];
 		
 		// Create file.
-		_file = fopen([path fileSystemRepresentation], "w");
+		_file = fopen(path.fileSystemRepresentation, "w");
 		
 		if (!_file)
 			return nil;
@@ -72,20 +72,20 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)handleData:(NSData *)data
 {
-	if ([data length] == 0)
+	if (data.length == 0)
 		return;
 	
 	// Write data.
 	if (_file)
 	{
-		if (fwrite([data bytes], [data length], 1, _file) == 1)
+		if (fwrite(data.bytes, data.length, 1, _file) == 1)
 		{
-			CC_SHA256_Update(&_sha256, [data bytes], (CC_LONG)[data length]);
+			CC_SHA256_Update(&_sha256, data.bytes, (CC_LONG)data.length);
 		}
 	}
 	
 	// Update count.
-	_bytesDownloaded += [data length];
+	_bytesDownloaded += data.length;
 	
 	// Call handler.
 	if (_updateHandler)
@@ -104,7 +104,7 @@ NS_ASSUME_NONNULL_BEGIN
 {
 	NSMutableData *result = [[NSMutableData alloc] initWithLength:CC_SHA256_DIGEST_LENGTH];
 	
-	CC_SHA256_Final([result mutableBytes], &_sha256);
+	CC_SHA256_Final(result.mutableBytes, &_sha256);
 	
 	return result;
 }
