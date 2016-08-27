@@ -129,7 +129,7 @@ static NSString *hexa_from_data(NSData *data);
 {
 	NSAssert(configuration, @"configuration is nil");
 	NSAssert(handler, @"handler is nil");
-	/*
+
 #if defined(DEBUG) && DEBUG
 	// To speed up debugging, if we are building in debug mode, do not launch a new tor instance if there is already one running.
 	
@@ -173,7 +173,7 @@ static NSString *hexa_from_data(NSData *data);
 		free(pids);
 	}
 #endif
-	*/
+	
 	[_opQueue scheduleBlock:^(SMOperationsControl opCtrl) {
 		
 		SMOperationsQueue	*operations = [[SMOperationsQueue alloc] init];
@@ -591,9 +591,12 @@ static NSString *hexa_from_data(NSData *data);
 				
 				if (errorInfo || canceled)
 				{
-					objc_setAssociatedObject(_task, &gExpectedTerminationKey, @YES, OBJC_ASSOCIATION_RETAIN);
-					[_task terminate];
-					_task = nil;
+					if (_task)
+					{
+						objc_setAssociatedObject(_task, &gExpectedTerminationKey, @YES, OBJC_ASSOCIATION_RETAIN);
+						[_task terminate];
+						_task = nil;
+					}
 					
 					_torURLSession = nil;
 					
@@ -637,9 +640,12 @@ static NSString *hexa_from_data(NSData *data);
 	
 	// Terminate task.
 	@try {
-		objc_setAssociatedObject(_task, &gExpectedTerminationKey, @YES, OBJC_ASSOCIATION_RETAIN);
-		[_task terminate];
-		[_task waitUntilExit];
+		if (_task)
+		{
+			objc_setAssociatedObject(_task, &gExpectedTerminationKey, @YES, OBJC_ASSOCIATION_RETAIN);
+			[_task terminate];
+			[_task waitUntilExit];
+		}
 	} @catch (NSException *exception) {
 		NSLog(@"Tor exception on terminate: %@", exception);
 	}
