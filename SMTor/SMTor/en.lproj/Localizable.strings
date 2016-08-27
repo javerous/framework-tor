@@ -11,6 +11,10 @@
 "tor_button_close" = "Close";
 
 
+// -- Logs --
+"log_tor_unexpected_termination" = "tor binary was unexpectedly terminated (return %d).";
+
+
 // -- Update --
 "update_subtitle_available" = "Tor %@ is now available—you have %@. Would you like to download it now?";
 "update_button_cancel" = "Cancel";
@@ -49,6 +53,7 @@
 "tor_start_err_unarchive" = "Can't unarchive tor.";
 "tor_start_err_signature" = "Can't validate signature.";
 "tor_start_err_launch" = "System can't launch tor binary.";
+"tor_start_err_control_file" = "Unable to find tor control file.";
 "tor_start_err_control_connect" = "Can't connect to tor control port.";
 "tor_start_err_control_authenticate" = "Can't authenticate to control tor.";
 "tor_start_err_control_hiddenservice" = "Can't register hidden service.";

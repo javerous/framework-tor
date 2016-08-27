@@ -47,10 +47,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SMTorTask : NSObject <NSURLSessionDelegate>
 
-@property (strong, atomic) void (^logHandler)(SMTorLogKind kind, NSString *log);
-
 // -- Life --
-- (void)startWithConfiguration:(SMTorConfiguration *)configuration logHandler:(nullable void (^)(SMTorLogKind kind, NSString *log))logHandler completionHandler:(void (^)(SMInfo *info))handler;
+- (void)startWithConfiguration:(SMTorConfiguration *)configuration logHandler:(nullable void (^)(SMTorLogKind kind, NSString *log, BOOL fatalLog))logHandler completionHandler:(void (^)(SMInfo *info))handler;
 - (void)stopWithCompletionHandler:(nullable dispatch_block_t)handler;
 
 // -- Download Context --

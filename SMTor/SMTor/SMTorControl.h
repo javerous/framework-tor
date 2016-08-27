@@ -39,7 +39,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, atomic) void (^socketError)(SMInfo *info);
 
 // -- Instance --
-- (nullable instancetype)initWithIP:(NSString *)ip port:(uint16_t)port;
+- (nullable instancetype)initWithIP:(NSString *)ip port:(uint16_t)port NS_DESIGNATED_INITIALIZER;
+
+- (instancetype)init NS_UNAVAILABLE;
 
 // -- Life --
 - (void)stop;

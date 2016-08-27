@@ -378,10 +378,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (IBAction)doInstallUpdate:(id)sender
 {
 	// Compute new rect.
-	NSSize oldSize = [availableView frame].size;
-	NSSize newSize = [workingView frame].size;
+	NSSize oldSize = availableView.frame.size;
+	NSSize newSize = workingView.frame.size;
 	
-	NSRect frame = [self.window frame];
+	NSRect frame = self.window.frame;
 	NSRect rect;
 
 	rect.size = NSMakeSize(frame.size.width + (newSize.width - oldSize.width), frame.size.height + (newSize.height - oldSize.height));

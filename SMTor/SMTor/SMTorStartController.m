@@ -37,7 +37,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SMTorStartWindowController : NSWindowController
 
-- (instancetype)initWithTorManager:(SMTorManager *)torManager infoHandler:(void (^)(SMInfo *info))handler;
+- (instancetype)initWithTorManager:(SMTorManager *)torManager infoHandler:(void (^)(SMInfo *info))handler NS_DESIGNATED_INITIALIZER;
+
+- (nullable instancetype)initWithCoder:(NSCoder *)coder NS_UNAVAILABLE;
+- (instancetype)initWithWindow:(nullable NSWindow *)window NS_UNAVAILABLE;
 
 @end
 
@@ -101,7 +104,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithTorManager:(SMTorManager *)torManager infoHandler:(void (^)(SMInfo *info))handler
 {
-	self = [super initWithWindowNibName:@"StartWindow"];
+	self = [super initWithWindow:nil];
 	
 	if (self)
 	{
@@ -124,6 +127,16 @@ NS_ASSUME_NONNULL_BEGIN
 ** SMTorStartWindowController - NSWindowController
 */
 #pragma mark - SMTorStartWindowController - NSWindowController
+
+- (nullable NSString *)windowNibName
+{
+	return @"StartWindow";
+}
+
+- (id)owner
+{
+	return self;
+}
 
 - (void)windowDidLoad
 {
@@ -163,10 +176,10 @@ NS_ASSUME_NONNULL_BEGIN
 								_isBootstrapping = YES;
 							}
 							
-							progressIndicator.doubleValue = [progress doubleValue];
+							progressIndicator.doubleValue = progress.doubleValue;
 							summaryField.stringValue = summary;
 							
-							if (_isBootstrapping && [progress doubleValue] >= 100)
+							if (_isBootstrapping && progress.doubleValue >= 100)
 							{
 								progressIndicator.indeterminate = YES;
 								summaryField.hidden = YES;
@@ -214,7 +227,7 @@ NS_ASSUME_NONNULL_BEGIN
 				case SMInfoError:
 				{
 					summaryField.textColor = [NSColor redColor];
-					summaryField.stringValue = [info renderMessage];
+					summaryField.stringValue = [NSString stringWithFormat:@"Code %d - %@", info.code, [info renderMessage]];
 					summaryField.hidden = NO;
 					
 					cancelButton.title = SMLocalizedString(@"tor_button_close", @"");

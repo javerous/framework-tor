@@ -79,7 +79,7 @@ typedef void (^SMTorControlLineHandler)(NSNumber *code, NSString * _Nullable lin
 		
 		_socket.delegate = self;
 		
-		[_socket setGlobalOperation:SMSocketOperationLine withSize:0 andTag:0];
+		[_socket setGlobalOperation:SMSocketOperationLine size:0 tag:0];
 		
 		// Containers.
 		_lineHandlers = [[NSMutableArray alloc] init];
@@ -142,10 +142,10 @@ typedef void (^SMTorControlLineHandler)(NSNumber *code, NSString * _Nullable lin
 		
 		[self _addHandler:^(NSNumber * _Nonnull code, NSString * _Nullable line, BOOL * _Nonnull finished) {
 			*finished = YES;
-			handler([code integerValue] == 250);
+			handler(code.integerValue == 250);
 		}];
 		
-		[_socket sendBytes:command.bytes ofSize:command.length copy:YES];
+		[_socket sendBytes:command.bytes size:command.length copy:YES];
 	});
 }
 
@@ -163,7 +163,7 @@ typedef void (^SMTorControlLineHandler)(NSNumber *code, NSString * _Nullable lin
 			*finished = YES;
 			
 			// Check code.
-			if ([code integerValue] != 250)
+			if (code.integerValue != 250)
 			{
 				handler(NO, nil);
 				return;
@@ -184,7 +184,7 @@ typedef void (^SMTorControlLineHandler)(NSNumber *code, NSString * _Nullable lin
 			handler(YES, content);
 		}];
 		
-		[_socket sendBytes:command.bytes ofSize:command.length copy:YES];
+		[_socket sendBytes:command.bytes size:command.length copy:YES];
 	});
 }
 
@@ -199,10 +199,10 @@ typedef void (^SMTorControlLineHandler)(NSNumber *code, NSString * _Nullable lin
 		
 		[self _addHandler:^(NSNumber * _Nonnull code, NSString * _Nullable line, BOOL * _Nonnull finished) {
 			*finished = YES;
-			handler([code integerValue] == 250);
+			handler(code.integerValue == 250);
 		}];
 		
-		[_socket sendBytes:command.bytes ofSize:command.length copy:YES];
+		[_socket sendBytes:command.bytes size:command.length copy:YES];
 	});
 }
 
@@ -227,7 +227,7 @@ typedef void (^SMTorControlLineHandler)(NSNumber *code, NSString * _Nullable lin
 
 		[self _addHandler:^(NSNumber * _Nonnull code, NSString * _Nullable line, BOOL * _Nonnull finished) {
 			
-			if ([code integerValue] == 250)
+			if (code.integerValue == 250)
 			{
 				if ([line caseInsensitiveCompare:@"OK"] == NSOrderedSame)
 				{
@@ -259,7 +259,7 @@ typedef void (^SMTorControlLineHandler)(NSNumber *code, NSString * _Nullable lin
 		}];
 		
 		// Send command.
-		[_socket sendBytes:command.bytes ofSize:command.length copy:YES];
+		[_socket sendBytes:command.bytes size:command.length copy:YES];
 	});
 }
 
@@ -289,9 +289,9 @@ typedef void (^SMTorControlLineHandler)(NSNumber *code, NSString * _Nullable lin
 	if (matches.count != 1)
 		return nil;
 	
-	NSTextCheckingResult *match = [matches firstObject];
+	NSTextCheckingResult *match = matches.firstObject;
 	
-	if ([match numberOfRanges] != 4)
+	if (match.numberOfRanges != 4)
 		return nil;
 	
 	// Extract.
@@ -299,7 +299,7 @@ typedef void (^SMTorControlLineHandler)(NSNumber *code, NSString * _Nullable lin
 	NSString *tag = [line substringWithRange:[match rangeAtIndex:2]];
 	NSString *summary = [line substringWithRange:[match rangeAtIndex:3]];
 	
-	return @{ @"progress" : @([progress integerValue]), @"tag" : tag, @"summary" : [summary stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""] };
+	return @{ @"progress" : @(progress.integerValue), @"tag" : tag, @"summary" : [summary stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""] };
 }
 
 
@@ -330,7 +330,7 @@ typedef void (^SMTorControlLineHandler)(NSNumber *code, NSString * _Nullable lin
 				continue;
 			
 			NSString	*code = [lineStr substringWithRange:NSMakeRange(0, 3)];
-			NSInteger	codeValue = [code integerValue];
+			NSInteger	codeValue = code.integerValue;
 			
 			if (codeValue <= 0)
 				continue;
@@ -352,7 +352,7 @@ typedef void (^SMTorControlLineHandler)(NSNumber *code, NSString * _Nullable lin
 				if (matches.count != 1)
 					continue;
 				
-				NSTextCheckingResult *match = [matches firstObject];
+				NSTextCheckingResult *match = matches.firstObject;
 				
 				if (match.numberOfRanges != 3)
 					continue;
@@ -370,7 +370,7 @@ typedef void (^SMTorControlLineHandler)(NSNumber *code, NSString * _Nullable lin
 				// Get handler.
 				if (_currentLineHandler == nil)
 				{
-					if ([_lineHandlers count] == 0)
+					if (_lineHandlers.count == 0)
 						continue;
 					
 					_currentLineHandler = _lineHandlers[0];
