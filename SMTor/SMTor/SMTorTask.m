@@ -863,6 +863,9 @@ static NSString *hexa_from_data(NSData *data);
 	
 	task.terminationHandler = ^(NSTask *atask) {
 		
+		if (!logHandler)
+			return;
+		
 		NSNumber *expectedTermination = objc_getAssociatedObject(atask, &gExpectedTerminationKey);
 		
 		if (expectedTermination.boolValue == NO)
