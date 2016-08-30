@@ -42,6 +42,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable instancetype)initWithCoder:(NSCoder *)coder NS_UNAVAILABLE;
 - (instancetype)initWithWindow:(nullable NSWindow *)window NS_UNAVAILABLE;
 
+- (void)_startModal;
+
 @end
 
 
@@ -61,10 +63,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 		SMTorStartWindowController *ctrl = [[SMTorStartWindowController alloc] initWithTorManager:torManager infoHandler:handler];
 
-		ctrl.window.preventsApplicationTerminationWhenModal = YES;
-		ctrl.window.animationBehavior = NSWindowAnimationBehaviorDocumentWindow;
-		
-		[[NSApplication sharedApplication] runModalForWindow:ctrl.window];
+		[ctrl _startModal];
 	});
 	
 	CFRunLoopWakeUp(runLoop);
@@ -94,6 +93,8 @@ NS_ASSUME_NONNULL_BEGIN
 	BOOL	_isBootstrapping;
 	
 	SMInfo	*_error;
+	
+	NSModalSession _modalSession;
 }
 
 
@@ -205,8 +206,7 @@ NS_ASSUME_NONNULL_BEGIN
 					
 				case SMInfoWarning:
 				{
-					// > Forward info.
-					_handler(info);
+
 					
 					// > Handle code.
 					switch ((SMTorWarningStart)info.code)
@@ -220,6 +220,9 @@ NS_ASSUME_NONNULL_BEGIN
 						case SMTorWarningStartCorruptedRetry:
 							break;
 					}
+					
+					// > Forward info.
+					_handler(info);
 					
 					break;
 				}
@@ -253,6 +256,7 @@ NS_ASSUME_NONNULL_BEGIN
 	if (_error)
 	{
 		_handler(_error);
+		
 		[self _closeWindow];
 	}
 	else
@@ -280,15 +284,31 @@ NS_ASSUME_NONNULL_BEGIN
 */
 #pragma mark - SMTorStartWindowController - Helpers
 
+- (void)_startModal
+{
+	self.window.preventsApplicationTerminationWhenModal = YES;
+	self.window.animationBehavior = NSWindowAnimationBehaviorDocumentWindow;
+	
+	_modalSession = [[NSApplication sharedApplication] beginModalSessionForWindow:self.window];
+	
+	[[NSApplication sharedApplication] runModalSession:_modalSession];
+}
+
 - (void)_closeWindow
 {
 	// > main queue <
 	
-	[self close];
-	[[NSApplication sharedApplication] stopModal];
+	if (!_modalSession)
+		return;
 	
+	[self close];
+	
+	[[NSApplication sharedApplication] endModalSession:_modalSession];
+	
+	_modalSession = NULL;
 	_selfRetain = nil;
 }
+
 
 @end
 
