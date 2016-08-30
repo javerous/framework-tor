@@ -139,111 +139,6 @@ NS_ASSUME_NONNULL_BEGIN
 	return self;
 }
 
-- (void)windowDidLoad
-{
-	[super windowDidLoad];
-	
-	[progressIndicator startAnimation:nil];
-	
-	[_torManager startWithInfoHandler:^(SMInfo *info) {
-		
-		dispatch_async(dispatch_get_main_queue(), ^{
-
-			if ([info.domain isEqualToString:SMTorInfoStartDomain] == NO)
-				return;
-		
-			// Dispatch info.
-			switch (info.kind)
-			{
-				case SMInfoInfo:
-				{
-					// > Forward info.
-					_handler(info);
-
-					// > Handle code.
-					switch ((SMTorEventStart)info.code)
-					{
-						case SMTorEventStartBootstrapping:
-						{
-							NSDictionary	*context = info.context;
-							NSString		*summary = context[@"summary"];
-							NSNumber		*progress = context[@"progress"];
-
-							if (!_isBootstrapping)
-							{
-								progressIndicator.indeterminate = NO;
-								summaryField.hidden = NO;
-								
-								_isBootstrapping = YES;
-							}
-							
-							progressIndicator.doubleValue = progress.doubleValue;
-							summaryField.stringValue = summary;
-							
-							if (_isBootstrapping && progress.doubleValue >= 100)
-							{
-								progressIndicator.indeterminate = YES;
-								summaryField.hidden = YES;
-								
-								_isBootstrapping = NO;
-							}
-							
-							break;
-						}
-							
-						case SMTorEventStartDone:
-						{
-							[self _closeWindow];
-							break;
-						}
-							
-						default:
-							break;
-					}
-					
-					break;
-				}
-					
-				case SMInfoWarning:
-				{
-
-					
-					// > Handle code.
-					switch ((SMTorWarningStart)info.code)
-					{
-						case SMTorWarningStartCanceled:
-						{
-							[self _closeWindow];
-							break;
-						}
-							
-						case SMTorWarningStartCorruptedRetry:
-							break;
-					}
-					
-					// > Forward info.
-					_handler(info);
-					
-					break;
-				}
-					
-				case SMInfoError:
-				{
-					summaryField.textColor = [NSColor redColor];
-					summaryField.stringValue = [NSString stringWithFormat:@"Code %d - %@", info.code, [info renderMessage]];
-					summaryField.hidden = NO;
-					
-					cancelButton.title = SMLocalizedString(@"tor_button_close", @"");
-					
-					_error = info;
-					
-					break;
-				}
-			}
-		});
-	}];
-}
-
 
 
 /*
@@ -286,12 +181,113 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)_startModal
 {
+	// Configure window behavior.
 	self.window.preventsApplicationTerminationWhenModal = YES;
 	self.window.animationBehavior = NSWindowAnimationBehaviorDocumentWindow;
 	
+	// Create modal session and start it.
 	_modalSession = [[NSApplication sharedApplication] beginModalSessionForWindow:self.window];
 	
 	[[NSApplication sharedApplication] runModalSession:_modalSession];
+	
+	// Start tor manager.
+	[progressIndicator startAnimation:nil];
+	
+	[_torManager startWithInfoHandler:^(SMInfo *info) {
+		
+		dispatch_async(dispatch_get_main_queue(), ^{
+			
+			if ([info.domain isEqualToString:SMTorInfoStartDomain] == NO)
+				return;
+			
+			// Dispatch info.
+			switch (info.kind)
+			{
+				case SMInfoInfo:
+				{
+					// > Forward info.
+					_handler(info);
+					
+					// > Handle code.
+					switch ((SMTorEventStart)info.code)
+					{
+						case SMTorEventStartBootstrapping:
+						{
+							NSDictionary	*context = info.context;
+							NSString		*summary = context[@"summary"];
+							NSNumber		*progress = context[@"progress"];
+							
+							if (!_isBootstrapping)
+							{
+								progressIndicator.indeterminate = NO;
+								summaryField.hidden = NO;
+								
+								_isBootstrapping = YES;
+							}
+							
+							progressIndicator.doubleValue = progress.doubleValue;
+							summaryField.stringValue = summary;
+							
+							if (_isBootstrapping && progress.doubleValue >= 100)
+							{
+								progressIndicator.indeterminate = YES;
+								summaryField.hidden = YES;
+								
+								_isBootstrapping = NO;
+							}
+							
+							break;
+						}
+							
+						case SMTorEventStartDone:
+						{
+							[self _closeWindow];
+							break;
+						}
+							
+						default:
+							break;
+					}
+					
+					break;
+				}
+					
+				case SMInfoWarning:
+				{
+					// > Handle code.
+					switch ((SMTorWarningStart)info.code)
+					{
+						case SMTorWarningStartCanceled:
+						{
+							[self _closeWindow];
+							break;
+						}
+							
+						case SMTorWarningStartCorruptedRetry:
+							break;
+					}
+					
+					// > Forward info.
+					_handler(info);
+					
+					break;
+				}
+					
+				case SMInfoError:
+				{
+					summaryField.textColor = [NSColor redColor];
+					summaryField.stringValue = [NSString stringWithFormat:@"Code %d - %@", info.code, [info renderMessage]];
+					summaryField.hidden = NO;
+					
+					cancelButton.title = SMLocalizedString(@"tor_button_close", @"");
+					
+					_error = info;
+					
+					break;
+				}
+			}
+		});
+	}];
 }
 
 - (void)_closeWindow
