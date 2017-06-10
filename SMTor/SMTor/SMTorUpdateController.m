@@ -173,20 +173,6 @@ NS_ASSUME_NONNULL_BEGIN
 {
 	// > main queue <
 	
-	// Init view state.
-	workingStatusField.stringValue = SMLocalizedString(@"update_status_launching", @"");
-	
-	workingDownloadInfo.stringValue = @"";
-	workingDownloadInfo.hidden = YES;
-	
-	workingProgress.doubleValue = 0.0;
-	workingProgress.indeterminate = YES;
-	workingProgress.hidden = NO;
-	[workingProgress startAnimation:nil];
-	
-	workingButton.title = SMLocalizedString(@"update_button_cancel", @"");
-	workingButton.keyEquivalent = @"\e";
-	
 	_updateDone = NO;
 	
 	// Launch update.
@@ -386,12 +372,29 @@ NS_ASSUME_NONNULL_BEGIN
 
 	rect.size = NSMakeSize(frame.size.width + (newSize.width - oldSize.width), frame.size.height + (newSize.height - oldSize.height));
 	rect.origin = NSMakePoint(frame.origin.x + (frame.size.width - rect.size.width) / 2.0, frame.origin.y + (frame.size.height - rect.size.height) / 2.0);
-
+	
+	// Init working view state.
+	workingStatusField.stringValue = SMLocalizedString(@"update_status_launching", @"");
+	
+	workingDownloadInfo.stringValue = @"";
+	workingDownloadInfo.hidden = YES;
+	
+	workingProgress.doubleValue = 0.0;
+	workingProgress.indeterminate = YES;
+	workingProgress.hidden = NO;
+	[workingProgress startAnimation:nil];
+	
+	workingButton.title = SMLocalizedString(@"update_button_cancel", @"");
+	workingButton.keyEquivalent = @"\e";
+	
+	// Prepare animated switch.
 	availableView.alphaValue = 1.0;
 	workingView.alphaValue = 0.0;
 	
+	// Add it.
 	[self.window.contentView addSubview:workingView];
-
+	
+	// Start animated switch.
 	[NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
 		context.duration = 0.1;
 		availableView.animator.alphaValue = 0.0;
