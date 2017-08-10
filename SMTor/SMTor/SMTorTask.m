@@ -844,6 +844,7 @@ static NSString *hexa_from_data(NSData *data);
 	[args addObject:@"--SocksPort"];
 	[args addObject:(@(configuration.socksPort)).stringValue];
 	
+//#warning Is it deprecated ?
 	[args addObject:@"--SocksListenAddress"];
 	[args addObject:(configuration.socksHost ?: @"localhost")];
 	
