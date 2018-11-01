@@ -540,7 +540,10 @@ static BOOL	version_greater(NSString * _Nullable baseVersion, NSString * _Nullab
 			handler([SMInfo infoOfKind:SMInfoInfo domain:SMTorInfoUpdateDomain code:SMTorEventUpdateArchiveStage]);
 			
 			// Stage file.
-			[SMTorOperations operationStageArchiveFile:[NSURL fileURLWithPath:downloadArchivePath] toTorBinariesPath:_configuration.binaryPath completionHandler:^(SMInfo *info) {
+			NSURL *archiveFile = [NSURL fileURLWithPath:downloadArchivePath];
+			NSURL *targetDirectory = [NSURL fileURLWithPath:_configuration.binaryPath];
+			
+			[SMTorOperations operationStageArchiveFileAtURL:archiveFile toDirectoryAtURL:targetDirectory completionHandler:^(SMInfo *info) {
 				
 				if (info.kind == SMInfoError)
 				{

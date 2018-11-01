@@ -24,7 +24,6 @@
 		E87691661C6411BF00C3B537 /* SMTorUpdateController.h in Headers */ = {isa = PBXBuildFile; fileRef = E87691621C6411BF00C3B537 /* SMTorUpdateController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E87691671C6411BF00C3B537 /* SMTorUpdateController.m in Sources */ = {isa = PBXBuildFile; fileRef = E87691631C6411BF00C3B537 /* SMTorUpdateController.m */; };
 		E87691831C6411CC00C3B537 /* SMPublicKey.h in Headers */ = {isa = PBXBuildFile; fileRef = E87691721C6411CC00C3B537 /* SMPublicKey.h */; };
-		E876918B1C64129E00C3B537 /* tor.tgz in Resources */ = {isa = PBXBuildFile; fileRef = E876918A1C64129E00C3B537 /* tor.tgz */; };
 		E89824291C73E2BB00600E66 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E89824281C73E2BB00600E66 /* Media.xcassets */; };
 		E8D93C981C67AAF100CB0C82 /* SMTorConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = E8D93C961C67AAF100CB0C82 /* SMTorConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E8D93C991C67AAF100CB0C82 /* SMTorConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E8D93C971C67AAF100CB0C82 /* SMTorConfiguration.m */; };
@@ -212,6 +211,7 @@
 				E87691371C640D1A00C3B537 /* Frameworks */,
 				E87691381C640D1A00C3B537 /* Headers */,
 				E87691391C640D1A00C3B537 /* Resources */,
+				E844F40F218B428500472B07 /* Obfuscate Tor Archive (Resources) */,
 			);
 			buildRules = (
 			);
@@ -261,7 +261,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E89824291C73E2BB00600E66 /* Media.xcassets in Resources */,
-				E876918B1C64129E00C3B537 /* tor.tgz in Resources */,
 				E8D93C9F1C67FC2400CB0C82 /* Localizable.strings in Resources */,
 				E87691581C64115E00C3B537 /* UpdateWindow.xib in Resources */,
 				E87691571C64115E00C3B537 /* StartWindow.xib in Resources */,
@@ -269,6 +268,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		E844F40F218B428500472B07 /* Obfuscate Tor Archive (Resources) */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Obfuscate Tor Archive (Resources)";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Define input/ouput.\nINPUT_FILE=\"${PROJECT_DIR}/${TARGET_NAME}/tor.tgz\"\nOUTPUT_FILE=\"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/tor.obf-tgz\"\n\n# Obfuscate content.\npython <<EOL\nb = bytearray(open('${INPUT_FILE}', 'rb').read())\nfor i in range(len(b)):\n    b[i] ^= 0x55\nopen('${OUTPUT_FILE}', 'wb').write(b)\nEOL\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		E87691361C640D1A00C3B537 /* Sources */ = {
