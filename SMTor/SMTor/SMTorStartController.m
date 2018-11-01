@@ -134,7 +134,7 @@ NS_ASSUME_NONNULL_BEGIN
 	return @"StartWindow";
 }
 
-- (id)owner
+- (nullable id)owner
 {
 	return self;
 }
