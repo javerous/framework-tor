@@ -45,7 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SMTorOperations : NSObject
 
-+ (void)operationStageArchiveFile:(NSURL *)fileURL toTorBinariesPath:(NSString *)torBinPath completionHandler:(nullable void (^)(SMInfo *info))handler;
++ (void)operationStageArchiveFileAtURL:(NSURL *)fileURL toDirectoryAtURL:(NSURL *)targetDirectory completionHandler:(nullable void (^)(SMInfo *info))handler;
 + (void)operationCheckSignatureWithTorBinariesPath:(NSString *)torBinPath completionHandler:(nullable void (^)(SMInfo *info))handler;
 
 @end

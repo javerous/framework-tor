@@ -52,7 +52,7 @@ static NSData * _Nullable file_sha256(NSURL *fileURL);
 @implementation SMTorOperations
 
 
-+ (void)operationStageArchiveFile:(NSURL *)fileURL toTorBinariesPath:(NSString *)torBinPath completionHandler:(nullable void (^)(SMInfo *info))handler
++ (void)operationStageArchiveFileAtURL:(NSURL *)fileURL toDirectoryAtURL:(NSURL *)targetDirectory completionHandler:(nullable void (^)(SMInfo *info))handler
 {
 	// Check parameters.
 	if (!handler)
@@ -66,18 +66,8 @@ static NSData * _Nullable file_sha256(NSURL *fileURL);
 	
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	
-	// Get target directory.
-	if ([torBinPath hasSuffix:@"/"])
-		torBinPath = [torBinPath substringToIndex:(torBinPath.length - 1)];
-	
-	if (!torBinPath)
-	{
-		handler([SMInfo infoOfKind:SMInfoError domain:SMTorInfoOperationDomain code:SMTorErrorOperationIO]);
-		return;
-	}
-	
 	// Create target directory.
-	if ([fileManager createDirectoryAtPath:torBinPath withIntermediateDirectories:YES attributes:nil error:nil] == NO)
+	if ([fileManager createDirectoryAtURL:targetDirectory withIntermediateDirectories:YES attributes:nil error:nil] == NO)
 	{
 		handler([SMInfo infoOfKind:SMInfoError domain:SMTorInfoOperationDomain code:SMTorErrorOperationConfiguration]);
 		return;
@@ -85,7 +75,7 @@ static NSData * _Nullable file_sha256(NSURL *fileURL);
 	
 	// Copy tarball.
 	NSString *filePath = fileURL.path;
-	NSString *newFilePath = [torBinPath stringByAppendingPathComponent:@"_temp.tgz"];
+	NSString *newFilePath = [[targetDirectory URLByAppendingPathComponent:@"_temp.tgz"] path];
 	
 	[fileManager removeItemAtPath:newFilePath error:nil];
 	
@@ -104,7 +94,7 @@ static NSData * _Nullable file_sha256(NSURL *fileURL);
 	[profile appendFormat:@"(allow file-read* (subpath \"/usr/lib\"))"];		// Allow to read libs.
 	[profile appendFormat:@"(allow file-read* (literal \"/usr/bin/tar\"))"];	// Allow to read tar (execute).
 	[profile appendFormat:@"(allow file-read* (literal \"%@\"))", [newFilePath stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""]]; // Allow to read the archive.
-	[profile appendFormat:@"(allow file* (subpath \"%@\"))", [torBinPath stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""]];	// Allow to write result.
+	[profile appendFormat:@"(allow file* (subpath \"%@\"))", [targetDirectory.path stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""]];	// Allow to write result.
 	
 #if DEBUG
 	[profile appendFormat:@"(allow file-read* (subpath \"/System/Library\"))"];	// Allow to read system things.
@@ -115,7 +105,7 @@ static NSData * _Nullable file_sha256(NSURL *fileURL);
 	NSTask *task = [[NSTask alloc] init];
 	
 	task.launchPath = @"/usr/bin/sandbox-exec";
-	task.currentDirectoryPath = torBinPath;
+	task.currentDirectoryPath = targetDirectory.path;
 	
 	task.arguments = @[ @"-p", profile, @"/usr/bin/tar", @"-x", @"-z", @"-f", newFilePath.lastPathComponent, @"--strip-components", @"1" ];
 	

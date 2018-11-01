@@ -208,11 +208,33 @@ static NSString *hexa_from_data(NSData *data);
 				return;
 			}
 			
-			// Stage the archive.
-			NSURL *archiveUrl = [[NSBundle bundleForClass:[self class]] URLForResource:@"tor" withExtension:@"tgz"];
+			// Create target directory.
+			NSURL *targetDirectory = [NSURL fileURLWithPath:configuration.binaryPath];
 			
-			[SMTorOperations operationStageArchiveFile:archiveUrl toTorBinariesPath:configuration.binaryPath completionHandler:^(SMInfo *info) {
+			if ([[NSFileManager defaultManager] createDirectoryAtURL:targetDirectory withIntermediateDirectories:YES attributes:nil error:nil] == NO)
+			{
+				errorInfo = [SMInfo infoOfKind:SMInfoError domain:SMTorInfoStartDomain code:SMTorErrorStartUnarchive info:nil];
+				ctrl(SMOperationsControlFinish);
+				return;
+			}
+			
+			// Deobfuscate archive.
+			NSURL *archiveObfuscatedUrl = [[NSBundle bundleForClass:self.class] URLForResource:@"tor" withExtension:@"obf-tgz"];
+			NSURL *archiveDeofuscatedUrl = [targetDirectory URLByAppendingPathComponent:@"_deobfuscated.tgz"];
+
+			if ([self.class deobfuscateFileAtURL:archiveObfuscatedUrl toFileAtURL:archiveDeofuscatedUrl] == NO)
+			{
+				[[NSFileManager defaultManager] removeItemAtURL:archiveDeofuscatedUrl error:nil];
+				errorInfo = [SMInfo infoOfKind:SMInfoError domain:SMTorInfoStartDomain code:SMTorErrorStartUnarchive info:nil];
+				ctrl(SMOperationsControlFinish);
+				return;
+			}
+			
+			// Stage the archive.
+			[SMTorOperations operationStageArchiveFileAtURL:archiveDeofuscatedUrl toDirectoryAtURL:targetDirectory completionHandler:^(SMInfo *info) {
 				
+				[[NSFileManager defaultManager] removeItemAtURL:archiveDeofuscatedUrl error:nil];
+
 				if (info.kind == SMInfoError)
 				{
 					errorInfo = [SMInfo infoOfKind:SMInfoError domain:SMTorInfoStartDomain code:SMTorErrorStartUnarchive info:info];
@@ -729,6 +751,63 @@ static NSString *hexa_from_data(NSData *data);
 ** SMTorTask - Helpers
 */
 #pragma mark - SMTorTask - Helpers
+
++ (BOOL)deobfuscateFileAtURL:(NSURL *)sourceFile toFileAtURL:(NSURL *)targetFile
+{
+	// Open file.
+	FILE *source = fopen(sourceFile.fileSystemRepresentation, "r");
+	FILE *target = fopen(targetFile.fileSystemRepresentation, "w");
+	
+	if (!source || !target)
+	{
+		if (source)
+			fclose(source);
+		if (target)
+			fclose(target);
+		
+		return NO;
+	}
+	
+	// Deofuscate file.
+	while (1)
+	{
+		// > Read chunk of data.
+		uint8_t	buffer[1024];
+		size_t	size = fread(buffer, 1, sizeof(buffer), source);
+		
+		if (ferror(source))
+		{
+			fclose(source);
+			fclose(target);
+			return NO;
+		}
+		
+		// > Deofuscate.
+		for (size_t i = 0; i < size; i++)
+			buffer[i] = buffer[i] ^ 0x55;
+		
+		// > Write chunk of data.
+		fwrite(buffer, 1, size, target);
+		
+		if (ferror(target))
+		{
+			fclose(source);
+			fclose(target);
+			return NO;
+		}
+		
+		// > Stop.
+		if (feof(source))
+			break;
+	}
+	
+	// Close.
+	fclose(source);
+	fclose(target);
+	
+	// Return.
+	return YES;
+}
 
 + (void)operationLaunchTorWithConfiguration:(SMTorConfiguration *)configuration logHandler:(nullable void (^)(SMTorLogKind kind, NSString *log, BOOL fatalLog))logHandler completionHandler:(void (^)(SMInfo *info, NSTask * _Nullable task, NSString * _Nullable ctrlKeyHexa))handler
 {
