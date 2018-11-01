@@ -228,7 +228,7 @@
 		E87691321C640D1A00C3B537 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Julien-Pierre Avérous";
 				TargetAttributes = {
 					E876913A1C640D1A00C3B537 = {
