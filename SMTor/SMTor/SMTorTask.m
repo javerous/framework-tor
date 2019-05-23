@@ -919,13 +919,12 @@ static NSString *hexa_from_data(NSData *data);
 	[args addObject:@"--ClientOnly"];
 	[args addObject:@"1"];
 	
-	
 	[args addObject:@"--SocksPort"];
-	[args addObject:(@(configuration.socksPort)).stringValue];
 	
-//#warning Is it deprecated ?
-	[args addObject:@"--SocksListenAddress"];
-	[args addObject:(configuration.socksHost ?: @"localhost")];
+	if (configuration.socksHost)
+		[args addObject:[NSString stringWithFormat:@"%@:%u", configuration.socksHost, configuration.socksPort]];
+	else
+		[args addObject:[NSString stringWithFormat:@"%u", configuration.socksPort]];
 	
 	[args addObject:@"--DataDirectory"];
 	[args addObject:dataPath];

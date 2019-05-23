@@ -219,7 +219,7 @@ typedef void (^SMTorControlLineHandler)(NSNumber *code, NSString * _Nullable lin
 		if (privateKey)
 			command = [[NSString stringWithFormat:@"ADD_ONION %@ Flags=Detach Port=%@\n", privateKey, servicePort] dataUsingEncoding:NSASCIIStringEncoding];
 		else
-			command = [[NSString stringWithFormat:@"ADD_ONION NEW:BEST Flags=Detach Port=%@\n", servicePort] dataUsingEncoding:NSASCIIStringEncoding];
+			command = [[NSString stringWithFormat:@"ADD_ONION NEW:RSA1024 Flags=Detach Port=%@\n", servicePort] dataUsingEncoding:NSASCIIStringEncoding];
 		
 		// Handle command result.
 		__block NSString *resultServiceID = nil;
