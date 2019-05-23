@@ -235,9 +235,9 @@ NS_ASSUME_NONNULL_BEGIN
 						// Create speed helper.
 						speedHelper = [[SMSpeedHelper alloc] initWithCompleteAmount:archiveTotal];
 						
-						speedHelper.updateHandler = ^(NSTimeInterval remainingTime) {
+						speedHelper.updateHandler = ^(SMSpeedHelper * sh) {
 							dispatch_async(dispatch_get_main_queue(), ^{
-								updateDownloadProgressMessage(remainingTime);
+								updateDownloadProgressMessage(sh.remainingTime);
 							});
 						};
 						break;
